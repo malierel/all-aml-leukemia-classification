@@ -117,3 +117,21 @@ En anlamlı 10 gen (Welch t-testi, eğitim seti):
 | U12471_cds1_at | Thrombospondin-p50 gene extracted from H | 1.03 | 6.4e-05 |
 
 Bütün genlerin sonuçları: `data/processed/golub_train_welch.csv`
+
+## 6. Batch analizi (Golub eğitim vs. test)
+
+| Bulgu | Sayı | Kaynak |
+|---|---|---|
+| AML oranı: eğitim / test | %28.95 / %41.18 | `src/eda_batch.py` |
+| Karşılaştırma grubu (sınıf karışmasın diye) | Yalnız ALL: eğitim 27, test 20 | `src/eda_batch.py` |
+| ALL hasta ortalaması: eğitim / test (Mann–Whitney p) | 7.020 / 6.895 (p = 0.072) | `figures/fig06a_batch_dagilim.pdf` |
+| AML hasta ortalaması: eğitim / test (Mann–Whitney p) | 7.044 / 6.941 (p = 0.286) | `figures/fig06a_batch_dagilim.pdf` |
+| Yalnız ALL PCA'sında seti en iyi ayıran bileşen (p) | PC2 (p = 4.3e-04) | `src/eda_batch.py` |
+| Bu bileşenin hasta ortalamasıyla korelasyonu | -0.49 | `src/eda_batch.py` |
+| KS testine giren ifade edilen gen | 4898 / 7071 | `src/eda_batch.py` |
+| KS p < 0.05 gen (ham log2) / şans eseri beklenen | 834 / 245 | `figures/fig06b_ks_pdegerleri.pdf` |
+| KS BH-FDR q < 0.05 gen (ham log2) | 22 | `figures/fig06b_ks_pdegerleri.pdf` |
+| KS p < 0.05 gen (hasta medyanına göre ortalanmış) | 540 | `figures/fig06b_ks_pdegerleri.pdf` |
+| KS BH-FDR q < 0.05 gen (hasta medyanına göre ortalanmış) | 2 | `figures/fig06b_ks_pdegerleri.pdf` |
+| Batch anlamlı (q < 0.05) ∩ ayırt edici gen (5. adım) | 1 | `src/eda_batch.py` |
+| Batch anlamlı ∩ en iyi 50 gen | 1 (M81933_at (CDC25A Cell division cycle 25A)) | `src/eda_batch.py` |

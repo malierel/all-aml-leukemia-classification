@@ -8,6 +8,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 from src.config import ROOT
+from src.eda_batch import batch
 from src.eda_degenes import FC, FDR, TOP, degenes
 from src.eda_dimred import dimred
 from src.eda_distribution import distribution
@@ -133,6 +134,34 @@ def step5() -> list[str]:
     return lines
 
 
+def step6() -> list[str]:
+    r = batch()
+    src = "`src/eda_batch.py`"
+    fd, fk = f"`{r['fig_dist']}`", f"`{r['fig_ks']}`"
+    rows = [
+        ("AML oranı: eğitim / test", f"{pct(r['aml_frac_train'])} / {pct(r['aml_frac_test'])}", src),
+        ("Karşılaştırma grubu (sınıf karışmasın diye)",
+         f"Yalnız ALL: eğitim {r['n_ALL_train']}, test {r['n_ALL_test']}", src),
+        ("ALL hasta ortalaması: eğitim / test (Mann–Whitney p)",
+         f"{r['mean_ALL_train']:.3f} / {r['mean_ALL_test']:.3f} (p = {r['mw_p_ALL']:.3f})", fd),
+        ("AML hasta ortalaması: eğitim / test (Mann–Whitney p)",
+         f"{r['mean_AML_train']:.3f} / {r['mean_AML_test']:.3f} (p = {r['mw_p_AML']:.3f})", fd),
+        ("Yalnız ALL PCA'sında seti en iyi ayıran bileşen (p)",
+         f"PC{r['pca_all_best_pc']} (p = {r['pca_all_best_p']:.1e})", src),
+        ("Bu bileşenin hasta ortalamasıyla korelasyonu", f"{r['pca_all_best_corr_mean']:.2f}", src),
+        ("KS testine giren ifade edilen gen", f"{r['n_expressed']} / {r['n_genes']}", src),
+        ("KS p < 0.05 gen (ham log2) / şans eseri beklenen", f"{r['ks_raw_p05']} / {r['ks_expected']:.0f}", fk),
+        (f"KS BH-FDR q < {FDR} gen (ham log2)", r["ks_raw_q05"], fk),
+        ("KS p < 0.05 gen (hasta medyanına göre ortalanmış)", r["ks_norm_p05"], fk),
+        (f"KS BH-FDR q < {FDR} gen (hasta medyanına göre ortalanmış)", r["ks_norm_q05"], fk),
+        ("Batch anlamlı (q < 0.05) ∩ ayırt edici gen (5. adım)", r["batch_and_de"], src),
+        (f"Batch anlamlı ∩ en iyi {TOP} gen", f"{r['batch_in_top50']} ({', '.join(r['batch_top50_genes']) or '—'})", src),
+    ]
+    lines = ["## 6. Batch analizi (Golub eğitim vs. test)", "", "| Bulgu | Sayı | Kaynak |", "|---|---|---|"]
+    lines += [f"| {k} | {v} | {s} |" for k, v, s in rows]
+    return lines + [""]
+
+
 def step1() -> list[str]:
     r = validate()
     src = "`src/validate_golub.py` (`load_golub.py` üzerinden)"
@@ -170,6 +199,7 @@ if __name__ == "__main__":
     md += step3()
     md += step4()
     md += step5()
+    md += step6()
     REPORT.parent.mkdir(exist_ok=True)
     REPORT.write_text("\n".join(md), encoding="utf-8")
     print("\n".join(md))
