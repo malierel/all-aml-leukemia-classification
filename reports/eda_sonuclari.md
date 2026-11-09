@@ -69,3 +69,16 @@ Test CSV ham sütun sırası: `[39, 40, 42, 47, 48, 49, 41, 43, 44, 45, 46, 70, 
 | log2 sonrası en uç iki hasta ortalaması farkı (kat) | 2.03 kat | `src/eda_distribution.py` |
 | log2 hasta ortalamalarının ortalaması: eğitim / test | 7.026 / 6.911 | `src/eda_distribution.py` |
 | log2 hasta ortalamalarının ortalaması: ALL / AML | 6.965 / 6.985 | `src/eda_distribution.py` |
+
+## 4. Boyut indirgeme
+
+| Bulgu | Sayı | Kaynak |
+|---|---|---|
+| Analize giren gen sayısı (AFFX hariç, kırpma + log2) | 7071 | `src/eda_dimred.py` |
+| PC1 / PC2 / PC3 açıklanan varyans | %9.38 / %8.29 / %5.92 | `figures/fig04a_pca_varyans.pdf` |
+| PC1 + PC2 toplam | %17.67 | `figures/fig04a_pca_varyans.pdf` |
+| %50 / %80 / %90 varyans için gereken bileşen | 13 / 41 / 54 | `figures/fig04a_pca_varyans.pdf` |
+| ALL/AML'yi en iyi ayıran bileşen (ilk 10 içinde, Mann–Whitney p) | PC1 (p = 1.8e-10) | `figures/fig04b_pca_pc1_pc2.pdf` |
+| Eğitim/testi en iyi ayıran bileşen (ilk 10 içinde, Mann–Whitney p) | PC2 (p = 6.4e-03) | `figures/fig04b_pca_pc1_pc2.pdf` |
+| Siluet (sınıf): PCA-2B / t-SNE / UMAP | 0.29 / 0.27 / 0.30 | `figures/fig04c_tsne_umap.pdf` |
+| Siluet (set): PCA-2B / t-SNE / UMAP | 0.04 / 0.05 / 0.04 | `figures/fig04c_tsne_umap.pdf` |

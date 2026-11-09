@@ -8,6 +8,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 from src.config import ROOT
+from src.eda_dimred import dimred
 from src.eda_distribution import distribution
 from src.eda_quality import HIGH, LOW, quality
 from src.validate_golub import validate
@@ -78,6 +79,30 @@ def step3() -> list[str]:
     return lines + [""]
 
 
+def step4() -> list[str]:
+    r = dimred()
+    src = "`src/eda_dimred.py`"
+    fv, fp, fe = f"`{r['fig_var']}`", f"`{r['fig_pca']}`", f"`{r['fig_embed']}`"
+    v = r["pc_var"]
+    rows = [
+        ("Analize giren gen sayısı (AFFX hariç, kırpma + log2)", r["n_genes"], src),
+        ("PC1 / PC2 / PC3 açıklanan varyans", f"{pct(v[0])} / {pct(v[1])} / {pct(v[2])}", fv),
+        ("PC1 + PC2 toplam", pct(v[0] + v[1]), fv),
+        ("%50 / %80 / %90 varyans için gereken bileşen", f"{r['n_pc_50']} / {r['n_pc_80']} / {r['n_pc_90']}", fv),
+        ("ALL/AML'yi en iyi ayıran bileşen (ilk 10 içinde, Mann–Whitney p)",
+         f"PC{r['best_pc_class']} (p = {r['best_pc_class_p']:.1e})", fp),
+        ("Eğitim/testi en iyi ayıran bileşen (ilk 10 içinde, Mann–Whitney p)",
+         f"PC{r['best_pc_set']} (p = {r['best_pc_set_p']:.1e})", fp),
+        ("Siluet (sınıf): PCA-2B / t-SNE / UMAP",
+         f"{r['sil_class_pca2']:.2f} / {r['sil_class_tsne']:.2f} / {r['sil_class_umap']:.2f}", fe),
+        ("Siluet (set): PCA-2B / t-SNE / UMAP",
+         f"{r['sil_set_pca2']:.2f} / {r['sil_set_tsne']:.2f} / {r['sil_set_umap']:.2f}", fe),
+    ]
+    lines = ["## 4. Boyut indirgeme", "", "| Bulgu | Sayı | Kaynak |", "|---|---|---|"]
+    lines += [f"| {k} | {v} | {s} |" for k, v, s in rows]
+    return lines + [""]
+
+
 def step1() -> list[str]:
     r = validate()
     src = "`src/validate_golub.py` (`load_golub.py` üzerinden)"
@@ -113,6 +138,7 @@ if __name__ == "__main__":
     md += step1()
     md += step2()
     md += step3()
+    md += step4()
     REPORT.parent.mkdir(exist_ok=True)
     REPORT.write_text("\n".join(md), encoding="utf-8")
     print("\n".join(md))
