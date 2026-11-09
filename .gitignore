@@ -1,0 +1,16 @@
+# Ham veri depoya konmaz (yönerge Bölüm 5)
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Kimlik bilgisi
+kaggle.json
+.env
