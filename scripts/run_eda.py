@@ -1,16 +1,56 @@
-"""Tüm EDA adımlarını sırayla çalıştırır ve reports/eda_sonuclari.md dosyasını baştan üretir.
+"""Bütün EDA adımlarını sırayla çalıştırıp reports/eda_sonuclari.md dosyasını her seferinde baştan yazıyor.
 
 Kullanım:  python scripts/run_eda.py
-Rapordaki her sayı bu betiğin çıktısından gelir (yönerge 6.9).
+Rapora koyduğumuz her sayı bu betiğin çıktısından geliyor (yönerge 6.9).
 """
 import sys
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 from src.config import ROOT
+from src.eda_quality import HIGH, LOW, quality
 from src.validate_golub import validate
 
 REPORT = ROOT / "reports" / "eda_sonuclari.md"
+
+
+def pct(x: float) -> str:
+    """Yüzdeleri raporda hep aynı biçimde, iki basamakla yazıyoruz."""
+    return f"%{x:.2f}"
+
+
+def step2() -> list[str]:
+    r = quality()
+    src = "`src/eda_quality.py`"
+    fig = f"`{r['fig']}`"
+    rows = [
+        ("Toplam prob / AFFX kontrol probu", f"{r['n_probes']} / {r['n_affx']}", src),
+        ("Değer tipi", "Tamamı tam sayı (int64)", src),
+        ("NaN / INF sayısı (72 hasta)", f"{r['vals_all']['n_nan']} / {r['vals_all']['n_inf']}", src),
+    ]
+    for key, name in [("vals_train", "Eğitim"), ("vals_test", "Test"), ("vals_genes", "Genler (AFFX hariç)"),
+                      ("vals_affx", "AFFX kontrol probları")]:
+        v = r[key]
+        rows += [
+            (f"{name}: negatif değer oranı", pct(v["neg_pct"]), src),
+            (f"{name}: <{LOW} oranı / >{HIGH} oranı", f"{pct(v['below_low_pct'])} / {pct(v['above_high_pct'])}", src),
+            (f"{name}: min / medyan / max", f"{v['min']} / {v['median']:g} / {v['max']}", src),
+        ]
+    nd = r["neg_call_dist"]
+    rows += [
+        ("Negatif değerlerin call dağılımı (A / M / P)",
+         f"{pct(nd.get('A', 0))} / {pct(nd.get('M', 0))} / {pct(nd.get('P', 0))}", src),
+        ("Hiçbir hastada P olmayan prob (72 hasta)", r["never_P_all"], src),
+        ("Hiçbir hastada P olmayan prob (yalnız eğitim)", r["never_P_train"], src),
+        ("Hiçbir hastada P olmayan AFFX probu", f"{r['never_P_affx']} / {r['n_affx']}", src),
+    ]
+    names = {"train": "Eğitim", "test": "Test"}
+    for (s, c), t in r["call_table"].iterrows():
+        rows.append((f"{names[s]} {c}: P / M / A", f"{pct(t['P'])} / {pct(t['M'])} / {pct(t['A'])}", fig))
+
+    lines = ["## 2. Veri kalitesi", "", "| Bulgu | Sayı | Kaynak |", "|---|---|---|"]
+    lines += [f"| {k} | {v} | {s} |" for k, v, s in rows]
+    return lines + [""]
 
 
 def step1() -> list[str]:
@@ -42,10 +82,11 @@ def step1() -> list[str]:
 
 
 if __name__ == "__main__":
-    # Windows konsolu varsayılan cp1254; Türkçe/matematik karakterleri bozulmasın diye UTF-8
+    # Windows konsolu Türkçe karakterleri ve bazı matematik işaretlerini bozuyor, o yüzden çıktıyı UTF-8 yapıyoruz
     sys.stdout.reconfigure(encoding="utf-8")
     md = ["# EDA Sonuçları", "", "Bu dosya `python scripts/run_eda.py` ile otomatik üretilir; elle düzenlemeyin.", ""]
     md += step1()
+    md += step2()
     REPORT.parent.mkdir(exist_ok=True)
     REPORT.write_text("\n".join(md), encoding="utf-8")
     print("\n".join(md))

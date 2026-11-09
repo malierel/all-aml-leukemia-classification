@@ -26,3 +26,31 @@ Bu dosya `python scripts/run_eda.py` ile otomatik üretilir; elle düzenlemeyin.
 Eğitim CSV ham sütun sırası: `[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 34, 35, 36, 37, 38, 28, 29, 30, 31, 32, 33]`
 
 Test CSV ham sütun sırası: `[39, 40, 42, 47, 48, 49, 41, 43, 44, 45, 46, 70, 71, 72, 68, 69, 67, 55, 56, 59, 52, 53, 51, 50, 54, 57, 58, 60, 61, 65, 66, 63, 64, 62]`
+
+## 2. Veri kalitesi
+
+| Bulgu | Sayı | Kaynak |
+|---|---|---|
+| Toplam prob / AFFX kontrol probu | 7129 / 58 | `src/eda_quality.py` |
+| Değer tipi | Tamamı tam sayı (int64) | `src/eda_quality.py` |
+| NaN / INF sayısı (72 hasta) | 0 / 0 | `src/eda_quality.py` |
+| Eğitim: negatif değer oranı | %28.49 | `src/eda_quality.py` |
+| Eğitim: <20 oranı / >16000 oranı | %32.37 / %0.86 | `src/eda_quality.py` |
+| Eğitim: min / medyan / max | -28400 / 127 / 61228 | `src/eda_quality.py` |
+| Test: negatif değer oranı | %28.88 | `src/eda_quality.py` |
+| Test: <20 oranı / >16000 oranı | %33.11 / %0.80 | `src/eda_quality.py` |
+| Test: min / medyan / max | -26775 / 114 / 71369 | `src/eda_quality.py` |
+| Genler (AFFX hariç): negatif değer oranı | %28.52 | `src/eda_quality.py` |
+| Genler (AFFX hariç): <20 oranı / >16000 oranı | %32.57 / %0.79 | `src/eda_quality.py` |
+| Genler (AFFX hariç): min / medyan / max | -28400 / 121 / 71369 | `src/eda_quality.py` |
+| AFFX kontrol probları: negatif değer oranı | %47.58 | `src/eda_quality.py` |
+| AFFX kontrol probları: <20 oranı / >16000 oranı | %50.84 / %5.94 | `src/eda_quality.py` |
+| AFFX kontrol probları: min / medyan / max | -3766 / 14 / 43858 | `src/eda_quality.py` |
+| Negatif değerlerin call dağılımı (A / M / P) | %99.28 / %0.22 / %0.50 | `src/eda_quality.py` |
+| Hiçbir hastada P olmayan prob (72 hasta) | 1971 | `src/eda_quality.py` |
+| Hiçbir hastada P olmayan prob (yalnız eğitim) | 2366 | `src/eda_quality.py` |
+| Hiçbir hastada P olmayan AFFX probu | 34 / 58 | `src/eda_quality.py` |
+| Test ALL: P / M / A | %28.55 / %1.58 / %69.87 | `figures/fig02_pma_dagilimi.pdf` |
+| Test AML: P / M / A | %25.59 / %1.65 / %72.77 | `figures/fig02_pma_dagilimi.pdf` |
+| Eğitim ALL: P / M / A | %29.68 / %1.60 / %68.72 | `figures/fig02_pma_dagilimi.pdf` |
+| Eğitim AML: P / M / A | %27.43 / %1.65 / %70.92 | `figures/fig02_pma_dagilimi.pdf` |
