@@ -135,3 +135,46 @@ Bütün genlerin sonuçları: `data/processed/golub_train_welch.csv`
 | KS BH-FDR q < 0.05 gen (hasta medyanına göre ortalanmış) | 2 | `figures/fig06b_ks_pdegerleri.pdf` |
 | Batch anlamlı (q < 0.05) ∩ ayırt edici gen (5. adım) | 1 | `src/eda_batch.py` |
 | Batch anlamlı ∩ en iyi 50 gen | 1 (M81933_at (CDC25A Cell division cycle 25A)) | `src/eda_batch.py` |
+
+## 7. MILE (GSE13159) ve gen eşlemesi
+
+| Bulgu | Sayı | Kaynak |
+|---|---|---|
+| MILE toplam hasta / seçilen ALL+AML | 2096 / 1292 | `src/eda_mile.py` |
+| ALL (C1–C8 toplamı) / AML | 750 / 542 | `figures/fig07a_mile_alt_siniflar.pdf` |
+| ALL / AML oranı | %58.05 / %41.95 | `src/eda_mile.py` |
+| Doku: kemik iliği / periferik kan (ALL) | 710 / 40 | `src/eda_mile.py` |
+| Doku: kemik iliği / periferik kan (AML) | 501 / 41 | `src/eda_mile.py` |
+| Matristeki prob sayısı | 54675 | `src/eda_mile.py` |
+| Bütün hastalarda boş (NaN) prob (hepsi AFFX) | 45 (45 AFFX) | `src/eda_mile.py` |
+| Bu problar atıldıktan sonra kalan NaN | 0 | `src/eda_mile.py` |
+| Değer aralığı (min / max) ve negatif değer sayısı | 0 / 1, negatif: 0 | `figures/fig07b_mile_olcek.pdf` |
+| Hasta medyanı aralığı | 0.2496 – 0.2496 | `figures/fig07b_mile_olcek.pdf` |
+| Sıralı hasta değerlerinin ortak sıralamadan en büyük sapması | 0.0057 | `figures/fig07b_mile_olcek.pdf` |
+| Çarpıklık: MILE değerleri / bir kez daha log2 alınırsa | 0.70 / -0.89 | `figures/fig07b_mile_olcek.pdf` |
+| Ölçek kararı | Ham değil; log benzeri sıkıştırılmış, 0–1'e ölçeklenmiş, quantile normalize. Kırpma + log2 uygulanmamalı. | `figures/fig07b_mile_olcek.pdf` |
+| GPL80 (Golub): prob / sembolsüz / çok genli / eşlenen | 7129 / 1032 / 377 / 5720 | `src/eda_mile.py` |
+| GPL570 (MILE): prob / sembolsüz / çok genli / eşlenen | 54675 / 8893 / 2796 / 42986 | `src/eda_mile.py` |
+| Golub: kullanılan prob → benzersiz gen (birden çok problu gen; gen başına en fazla prob) | 5701 → 5033 (556; 6) | `src/eda_mile.py` |
+| MILE: kullanılan prob → benzersiz gen (birden çok problu gen; gen başına en fazla prob) | 42976 → 21655 (10747; 15) | `src/eda_mile.py` |
+| Çoklu prob kuralı | Ortalama ifadesi en yüksek prob (Golub'da ortalama yalnız eğitim setinden) | `src/eda_mile.py` |
+| **Golub–MILE ortak gen sayısı** | **4975** | `src/eda_mile.py` |
+
+MILE alt sınıfları:
+
+| Sınıf | Alt sınıf | Hasta |
+|---|---|---|
+| ALL | ALL with hyperdiploid karyotype | 40 |
+| ALL | ALL with t(12;21) | 58 |
+| ALL | ALL with t(1;19) | 36 |
+| ALL | Pro-B-ALL with t(11q23)/MLL | 70 |
+| ALL | T-ALL | 174 |
+| ALL | c-ALL/Pre-B-ALL with t(9;22) | 122 |
+| ALL | c-ALL/Pre-B-ALL without t(9;22) | 237 |
+| ALL | mature B-ALL with t(8;14) | 13 |
+| AML | AML complex aberrant karyotype | 48 |
+| AML | AML with inv(16)/t(16;16) | 28 |
+| AML | AML with normal karyotype + other abnormalities | 351 |
+| AML | AML with t(11q23)/MLL | 38 |
+| AML | AML with t(15;17) | 37 |
+| AML | AML with t(8;21) | 40 |

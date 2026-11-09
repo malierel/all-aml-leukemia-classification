@@ -12,6 +12,7 @@ from src.eda_batch import batch
 from src.eda_degenes import FC, FDR, TOP, degenes
 from src.eda_dimred import dimred
 from src.eda_distribution import distribution
+from src.eda_mile import mile_eda
 from src.eda_quality import HIGH, LOW, quality
 from src.validate_golub import validate
 
@@ -162,6 +163,49 @@ def step6() -> list[str]:
     return lines + [""]
 
 
+def step7() -> list[str]:
+    r = mile_eda()
+    src = "`src/eda_mile.py`"
+    fs, fc = f"`{r['fig_sub']}`", f"`{r['fig_scale']}`"
+    a80, a570 = r["annot80"], r["annot570"]
+    g, m = r["golub_collapse"], r["mile_collapse"]
+    tis = r["tissue_counts"]
+    rows = [
+        ("MILE toplam hasta / seçilen ALL+AML", f"{r['n_total']} / {r['n_all'] + r['n_aml']}", src),
+        ("ALL (C1–C8 toplamı) / AML", f"{r['n_all']} / {r['n_aml']}", fs),
+        ("ALL / AML oranı", f"{pct(100 * r['n_all'] / (r['n_all'] + r['n_aml']))} / "
+                            f"{pct(100 * r['n_aml'] / (r['n_all'] + r['n_aml']))}", src),
+        ("Doku: kemik iliği / periferik kan (ALL)",
+         f"{tis.loc[('ALL', 'bone marrow')]} / {tis.loc[('ALL', 'peripheral blood')]}", src),
+        ("Doku: kemik iliği / periferik kan (AML)",
+         f"{tis.loc[('AML', 'bone marrow')]} / {tis.loc[('AML', 'peripheral blood')]}", src),
+        ("Matristeki prob sayısı", r["n_probes_raw"], src),
+        ("Bütün hastalarda boş (NaN) prob (hepsi AFFX)", f"{r['n_all_nan']} ({r['all_nan_affx']} AFFX)", src),
+        ("Bu problar atıldıktan sonra kalan NaN", r["n_nan_left"], src),
+        ("Değer aralığı (min / max) ve negatif değer sayısı", f"{r['min']:g} / {r['max']:g}, negatif: {r['n_neg']}", fc),
+        ("Hasta medyanı aralığı", f"{r['sample_median_min']:.4f} – {r['sample_median_max']:.4f}", fc),
+        ("Sıralı hasta değerlerinin ortak sıralamadan en büyük sapması", f"{r['sorted_max_diff']:.4f}", fc),
+        ("Çarpıklık: MILE değerleri / bir kez daha log2 alınırsa", f"{r['skew']:.2f} / {r['skew_after_log']:.2f}", fc),
+        ("Ölçek kararı", "Ham değil; log benzeri sıkıştırılmış, 0–1'e ölçeklenmiş, quantile normalize. "
+                         "Kırpma + log2 uygulanmamalı.", fc),
+        ("GPL80 (Golub): prob / sembolsüz / çok genli / eşlenen",
+         f"{a80['n_probes']} / {a80['n_empty']} / {a80['n_multi']} / {a80['n_mapped']}", src),
+        ("GPL570 (MILE): prob / sembolsüz / çok genli / eşlenen",
+         f"{a570['n_probes']} / {a570['n_empty']} / {a570['n_multi']} / {a570['n_mapped']}", src),
+        ("Golub: kullanılan prob → benzersiz gen (birden çok problu gen; gen başına en fazla prob)",
+         f"{g['n_probes_used']} → {g['n_genes']} ({g['n_genes_multi_probe']}; {g['max_probes_per_gene']})", src),
+        ("MILE: kullanılan prob → benzersiz gen (birden çok problu gen; gen başına en fazla prob)",
+         f"{m['n_probes_used']} → {m['n_genes']} ({m['n_genes_multi_probe']}; {m['max_probes_per_gene']})", src),
+        ("Çoklu prob kuralı", "Ortalama ifadesi en yüksek prob (Golub'da ortalama yalnız eğitim setinden)", src),
+        ("**Golub–MILE ortak gen sayısı**", f"**{r['n_common']}**", src),
+    ]
+    lines = ["## 7. MILE (GSE13159) ve gen eşlemesi", "", "| Bulgu | Sayı | Kaynak |", "|---|---|---|"]
+    lines += [f"| {k} | {v} | {s} |" for k, v, s in rows]
+    lines += ["", "MILE alt sınıfları:", "", "| Sınıf | Alt sınıf | Hasta |", "|---|---|---|"]
+    lines += [f"| {c} | {s} | {n} |" for (c, s), n in r["subclass_counts"].items()]
+    return lines + [""]
+
+
 def step1() -> list[str]:
     r = validate()
     src = "`src/validate_golub.py` (`load_golub.py` üzerinden)"
@@ -200,6 +244,7 @@ if __name__ == "__main__":
     md += step4()
     md += step5()
     md += step6()
+    md += step7()
     REPORT.parent.mkdir(exist_ok=True)
     REPORT.write_text("\n".join(md), encoding="utf-8")
     print("\n".join(md))
