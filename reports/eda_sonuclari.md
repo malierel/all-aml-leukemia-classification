@@ -82,3 +82,38 @@ Test CSV ham sütun sırası: `[39, 40, 42, 47, 48, 49, 41, 43, 44, 45, 46, 70, 
 | Eğitim/testi en iyi ayıran bileşen (ilk 10 içinde, Mann–Whitney p) | PC2 (p = 6.4e-03) | `figures/fig04b_pca_pc1_pc2.pdf` |
 | Siluet (sınıf): PCA-2B / t-SNE / UMAP | 0.29 / 0.27 / 0.30 | `figures/fig04c_tsne_umap.pdf` |
 | Siluet (set): PCA-2B / t-SNE / UMAP | 0.04 / 0.05 / 0.04 | `figures/fig04c_tsne_umap.pdf` |
+
+## 5. Ayırt edici genler (yalnızca eğitim seti)
+
+| Bulgu | Sayı | Kaynak |
+|---|---|---|
+| Kullanılan veri | Yalnızca eğitim seti (38 hasta), AFFX hariç 7071 gen | `src/eda_degenes.py` |
+| Test edilen gen (sıfır varyanslı çıkarıldıktan sonra) | 7071 (çıkarılan: 0) | `src/eda_degenes.py` |
+| Ham p < 0.05 olan gen / şans eseri beklenen | 1975 / 354 | `src/eda_degenes.py` |
+| BH-FDR q < 0.05 anlamlı gen | 1274 | `figures/fig05a_volcano.pdf` |
+| BH-FDR q < 0.01 anlamlı gen | 815 | `src/eda_degenes.py` |
+| Anlamlı ve mutlak log2FC ≥ 1 (≥ 2 kat) gen | 497 | `figures/fig05a_volcano.pdf` |
+| Anlamlı genlerden AML'de yüksek / ALL'de yüksek | 369 / 905 | `figures/fig05a_volcano.pdf` |
+| En iyi 50 gen: AML'de yüksek / ALL'de yüksek | 27 / 23 | `figures/fig05b_isi_haritasi_top50.pdf` |
+| En iyi 50 gendeki en büyük q | 3.3e-04 | `figures/fig05b_isi_haritasi_top50.pdf` |
+| Hasta kümelemesi (2 küme) – sınıf uyumu (düzeltilmiş Rand) | 0.79 | `figures/fig05b_isi_haritasi_top50.pdf` |
+| Küme 1 (ALL / AML) | 2 / 11 | `figures/fig05b_isi_haritasi_top50.pdf` |
+| Küme 2 (ALL / AML) | 25 / 0 | `figures/fig05b_isi_haritasi_top50.pdf` |
+| Golub (1999) 50 gen listesiyle örtüşme | Yapılmadı: liste makine tarafından okunabilir bir kaynaktan alınamadı | — |
+
+En anlamlı 10 gen (Welch t-testi, eğitim seti):
+
+| Prob | Açıklama | log2FC (AML − ALL) | q |
+|---|---|---|---|
+| M27891_at | CST3 Cystatin C (amyloid angiopathy and  | 5.92 | 3.1e-06 |
+| X95735_at | Zyxin | 3.6 | 4.3e-06 |
+| M55150_at | FAH Fumarylacetoacetate | 1.31 | 9.4e-06 |
+| M28170_at | CD19 CD19 antigen | -2.63 | 2.0e-05 |
+| X52142_at | CTPS CTP synthetase | -2.37 | 2.2e-05 |
+| Y12670_at | LEPR Leptin receptor | 1.75 | 3.9e-05 |
+| M81933_at | CDC25A Cell division cycle 25A | 1.76 | 3.9e-05 |
+| U50136_rna1_at | Leukotriene C4 synthase (LTC4S) gene | 1.4 | 3.9e-05 |
+| M31523_at | TCF3 Transcription factor 3 (E2A immunog | -1.95 | 3.9e-05 |
+| U12471_cds1_at | Thrombospondin-p50 gene extracted from H | 1.03 | 6.4e-05 |
+
+Bütün genlerin sonuçları: `data/processed/golub_train_welch.csv`

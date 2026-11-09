@@ -8,6 +8,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 from src.config import ROOT
+from src.eda_degenes import FC, FDR, TOP, degenes
 from src.eda_dimred import dimred
 from src.eda_distribution import distribution
 from src.eda_quality import HIGH, LOW, quality
@@ -103,6 +104,35 @@ def step4() -> list[str]:
     return lines + [""]
 
 
+def step5() -> list[str]:
+    r = degenes()
+    src = "`src/eda_degenes.py`"
+    fv, fh = f"`{r['fig_volcano']}`", f"`{r['fig_heat']}`"
+    tab = r["cluster_tab"]
+    rows = [
+        ("Kullanılan veri", f"Yalnızca eğitim seti ({r['n_train']} hasta), AFFX hariç {r['n_genes']} gen", src),
+        ("Test edilen gen (sıfır varyanslı çıkarıldıktan sonra)", f"{r['n_tested']} (çıkarılan: {r['n_const']})", src),
+        ("Ham p < 0.05 olan gen / şans eseri beklenen", f"{r['n_raw_p05']} / {r['expected_by_chance']:.0f}", src),
+        (f"BH-FDR q < {FDR} anlamlı gen", r["n_sig_05"], fv),
+        ("BH-FDR q < 0.01 anlamlı gen", r["n_sig_01"], src),
+        (f"Anlamlı ve mutlak log2FC ≥ {FC:g} (≥ 2 kat) gen", r["n_sig_big"], fv),  # "|" tabloyu bozduğu için yazıyla
+        ("Anlamlı genlerden AML'de yüksek / ALL'de yüksek", f"{r['n_up_AML']} / {r['n_up_ALL']}", fv),
+        (f"En iyi {TOP} gen: AML'de yüksek / ALL'de yüksek", f"{r['top_up_AML']} / {TOP - r['top_up_AML']}", fh),
+        (f"En iyi {TOP} gendeki en büyük q", f"{r['top_q_max']:.1e}", fh),
+        ("Hasta kümelemesi (2 küme) – sınıf uyumu (düzeltilmiş Rand)", f"{r['ari']:.2f}", fh),
+        ("Küme 1 (ALL / AML)", f"{tab.loc[1, 'ALL']} / {tab.loc[1, 'AML']}", fh),
+        ("Küme 2 (ALL / AML)", f"{tab.loc[2, 'ALL']} / {tab.loc[2, 'AML']}", fh),
+        ("Golub (1999) 50 gen listesiyle örtüşme", "Yapılmadı: liste makine tarafından okunabilir bir kaynaktan alınamadı", "—"),
+    ]
+    lines = ["## 5. Ayırt edici genler (yalnızca eğitim seti)", "", "| Bulgu | Sayı | Kaynak |", "|---|---|---|"]
+    lines += [f"| {k} | {v} | {s} |" for k, v, s in rows]
+    lines += ["", "En anlamlı 10 gen (Welch t-testi, eğitim seti):", "",
+              "| Prob | Açıklama | log2FC (AML − ALL) | q |", "|---|---|---|---|"]
+    lines += [f"| {g} | {d} | {fc} | {q:.1e} |" for g, d, fc, q in r["top10"]]
+    lines += ["", "Bütün genlerin sonuçları: `data/processed/golub_train_welch.csv`", ""]
+    return lines
+
+
 def step1() -> list[str]:
     r = validate()
     src = "`src/validate_golub.py` (`load_golub.py` üzerinden)"
@@ -139,6 +169,7 @@ if __name__ == "__main__":
     md += step2()
     md += step3()
     md += step4()
+    md += step5()
     REPORT.parent.mkdir(exist_ok=True)
     REPORT.write_text("\n".join(md), encoding="utf-8")
     print("\n".join(md))
