@@ -1,9 +1,12 @@
-"""Ham veriyi indiren betik. Ham veriyi depoya koymuyoruz; bunun yerine herkes bu betikle aynı veriyi indirebiliyor.
+"""Ham verinin nereden, hangi adla indirileceğini gösteren ve dosyaların yerinde olup olmadığını kontrol eden betik.
+
+Ham veriyi depoya koymuyoruz. Dosyaları elle indiriyoruz, çünkü GEO'nun "Download full table" ile verdiği
+anotasyon dosyalarının adında sürüm numarası var ve bunlar otomatik indirilen .annot dosyalarından farklı.
+Projede kullandığımız dosyaların birebir aynısını elde etmek için aşağıdaki adımları izlemek yeterli.
 
 Kullanım:
-    python scripts/download_data.py golub   # Kaggle API anahtarı gerekiyor (~/.kaggle/kaggle.json)
-    python scripts/download_data.py mile    # GEO'dan GSE13159'u indiriyor (yaklaşık 1 GB)
-    python scripts/download_data.py all
+    python scripts/download_data.py          # Eksik dosya varsa nereden indireceğini yazar
+    python scripts/download_data.py golub    # (İsteğe bağlı) Golub'u Kaggle API ile indirir
 """
 import sys
 from pathlib import Path
@@ -11,9 +14,37 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 from src.config import GOLUB_DIR, MILE_DIR
 
+# Her dosya için: (klasör, dosya adı, nereden ve nasıl indirileceği)
+FILES = [
+    (GOLUB_DIR, "data_set_ALL_AML_train.csv",
+     "Kaggle 'crawford/gene-expression' sayfasından (https://www.kaggle.com/datasets/crawford/gene-expression)"),
+    (GOLUB_DIR, "data_set_ALL_AML_independent.csv", "Aynı Kaggle sayfasından"),
+    (GOLUB_DIR, "actual.csv", "Aynı Kaggle sayfasından"),
+    (MILE_DIR, "GSE13159_series_matrix.txt.gz",
+     "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE13nnn/GSE13159/matrix/ (sıkıştırılmış haliyle bırakın)"),
+    (MILE_DIR, "GPL570-55999.txt",
+     "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GPL570 sayfasının altındaki 'Download full table'"),
+    (MILE_DIR, "GPL80-30376.txt",
+     "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GPL80 sayfasının altındaki 'Download full table'"),
+]
+
+
+def check() -> bool:
+    """Her dosyanın yerinde olup olmadığına bakıyoruz; eksik olanlar için nereden indirileceğini yazıyoruz."""
+    ok = True
+    for folder, name, how in FILES:
+        path = folder / name
+        if path.exists():
+            print(f"[var]   {path.relative_to(folder.parents[2])}")
+        else:
+            ok = False
+            print(f"[EKSİK] {path.relative_to(folder.parents[2])}\n        İndirme: {how}")
+    print("\nBütün dosyalar hazır." if ok else "\nEksik dosyaları indirip yukarıdaki klasörlere koyun.")
+    return ok
+
 
 def download_golub():
-    # Golub verisi Kaggle'daki crawford/gene-expression sayfasından geliyor, lisansı CC0
+    # İsteğe bağlı kısayol: Kaggle API anahtarı (~/.kaggle/kaggle.json) varsa Golub'u otomatik indiriyoruz
     from kaggle.api.kaggle_api_extended import KaggleApi
 
     GOLUB_DIR.mkdir(parents=True, exist_ok=True)
@@ -23,21 +54,8 @@ def download_golub():
     print("Golub indirildi:", sorted(p.name for p in GOLUB_DIR.iterdir()))
 
 
-def download_mile():
-    # MILE verisinin yanında iki yonganın anotasyon dosyalarını da indiriyoruz.
-    # Bunlara ihtiyacımız var çünkü iki veri setindeki prob adlarını gen adlarına çevirip öyle karşılaştıracağız.
-    import GEOparse
-
-    MILE_DIR.mkdir(parents=True, exist_ok=True)
-    GEOparse.get_GEO(geo="GSE13159", destdir=str(MILE_DIR), silent=False)
-    GEOparse.get_GEO(geo="GPL570", destdir=str(MILE_DIR))  # MILE'ın kullandığı yonga: HG-U133 Plus 2.0
-    GEOparse.get_GEO(geo="GPL80", destdir=str(MILE_DIR))   # Golub'un kullandığı yonga: Hu6800
-    print("MILE ve platform anotasyonları indirildi.")
-
-
 if __name__ == "__main__":
-    target = sys.argv[1] if len(sys.argv) > 1 else "all"
-    if target in ("golub", "all"):
+    sys.stdout.reconfigure(encoding="utf-8")
+    if len(sys.argv) > 1 and sys.argv[1] == "golub":
         download_golub()
-    if target in ("mile", "all"):
-        download_mile()
+    sys.exit(0 if check() else 1)

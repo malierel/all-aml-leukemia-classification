@@ -15,9 +15,12 @@ from src.eda_dimred import dimred
 from src.eda_distribution import distribution
 from src.eda_mile import mile_eda
 from src.eda_quality import HIGH, LOW, quality
+from src.report_summary import latex, summary_md
 from src.validate_golub import validate
 
 REPORT = ROOT / "reports" / "eda_sonuclari.md"
+R = {}  # Her adımın sonuç sözlüğü: R[1] ... R[8]
+LATEX = ROOT / "reports" / "eda_latex_taslak.tex"
 
 
 def pct(x: float) -> str:
@@ -27,6 +30,7 @@ def pct(x: float) -> str:
 
 def step2() -> list[str]:
     r = quality()
+    R[2] = r  # Özet ve LaTeX taslağı için sonucu saklıyoruz
     src = "`src/eda_quality.py`"
     fig = f"`{r['fig']}`"
     rows = [
@@ -61,6 +65,7 @@ def step2() -> list[str]:
 
 def step3() -> list[str]:
     r = distribution()
+    R[3] = r  # Özet ve LaTeX taslağı için sonucu saklıyoruz
     src = "`src/eda_distribution.py`"
     fa, fb = f"`{r['fig_hist']}`", f"`{r['fig_box']}`"
     rows = [
@@ -85,6 +90,7 @@ def step3() -> list[str]:
 
 def step4() -> list[str]:
     r = dimred()
+    R[4] = r  # Özet ve LaTeX taslağı için sonucu saklıyoruz
     src = "`src/eda_dimred.py`"
     fv, fp, fe = f"`{r['fig_var']}`", f"`{r['fig_pca']}`", f"`{r['fig_embed']}`"
     v = r["pc_var"]
@@ -109,6 +115,7 @@ def step4() -> list[str]:
 
 def step5() -> list[str]:
     r = degenes()
+    R[5] = r  # Özet ve LaTeX taslağı için sonucu saklıyoruz
     src = "`src/eda_degenes.py`"
     fv, fh = f"`{r['fig_volcano']}`", f"`{r['fig_heat']}`"
     tab = r["cluster_tab"]
@@ -138,6 +145,7 @@ def step5() -> list[str]:
 
 def step6() -> list[str]:
     r = batch()
+    R[6] = r  # Özet ve LaTeX taslağı için sonucu saklıyoruz
     src = "`src/eda_batch.py`"
     fd, fk = f"`{r['fig_dist']}`", f"`{r['fig_ks']}`"
     rows = [
@@ -166,6 +174,7 @@ def step6() -> list[str]:
 
 def step7() -> list[str]:
     r = mile_eda()
+    R[7] = r  # Özet ve LaTeX taslağı için sonucu saklıyoruz
     src = "`src/eda_mile.py`"
     fs, fc = f"`{r['fig_sub']}`", f"`{r['fig_scale']}`"
     a80, a570 = r["annot80"], r["annot570"]
@@ -209,6 +218,7 @@ def step7() -> list[str]:
 
 def step8() -> list[str]:
     r = compare()
+    R[8] = r  # Özet ve LaTeX taslağı için sonucu saklıyoruz
     src = "`src/eda_compare.py`"
     fs, fp, fd = f"`{r['fig_scale']}`", f"`{r['fig_pca']}`", f"`{r['fig_dir']}`"
     rows = [
@@ -243,6 +253,7 @@ def step8() -> list[str]:
 
 def step1() -> list[str]:
     r = validate()
+    R[1] = r  # Özet ve LaTeX taslağı için sonucu saklıyoruz
     src = "`src/validate_golub.py` (`load_golub.py` üzerinden)"
     rows = [
         ("Etiket dosyasındaki hasta sayısı", r["n_label_rows"]),
@@ -281,7 +292,10 @@ if __name__ == "__main__":
     md += step6()
     md += step7()
     md += step8()
+    # 9. adım: bütün adımların sonuçlarından özet ve LaTeX taslağı. Sayılar R sözlüğünden geliyor.
+    md += summary_md(R)
     REPORT.parent.mkdir(exist_ok=True)
     REPORT.write_text("\n".join(md), encoding="utf-8")
+    LATEX.write_text(latex(R), encoding="utf-8")
     print("\n".join(md))
-    print(f"\nYazıldı: {REPORT}")
+    print(f"\nYazıldı: {REPORT}\nYazıldı: {LATEX}")

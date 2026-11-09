@@ -201,3 +201,54 @@ MILE alt sınıfları:
 | Golub t ile MILE t sıralama uyumu (Spearman ρ) | 0.44 | `figures/fig08c_yon_tutarliligi.pdf` |
 | Golub en iyi 50 gen: MILE'da aynı yön / aynı yönde anlamlı | 47 / 46 | `figures/fig08c_yon_tutarliligi.pdf` |
 | Golub en iyi 50 genden ters yönde olanlar | CDC25A (Golub t=6.9, MILE t=-4.8), DYNLL1 (Golub t=-5.9, MILE t=3.4), UBE2V2 (Golub t=-6.0, MILE t=4.4) | `figures/fig08c_yon_tutarliligi.pdf` |
+
+## 9. Özet: numaralı bulgular ve modelleme için çıkarımlar
+
+1. **Bulgu:** Golub etiketleri hasta numarasıyla eşlendi; sınıflar 27/11 (eğitim) ve 20/14 (test). Sütun sırasına göre eşleseydik testte 14 hasta yanlış etiketlenirdi.
+   **Çıkarım:** Etiketler her zaman hasta numarasıyla eşlenmeli; yükleyicideki assert kontrolleri korunmalı.
+
+2. **Bulgu:** Golub'da NaN/INF yok (0/0); değerlerin %28,67'si negatif ve negatiflerin %99,28'i 'Absent'.
+   **Çıkarım:** Modüldeki INF doldurma adımına bu veride gerek yok; negatifler ölçüm gürültüsü olduğu için alttan kırpılmalı.
+
+3. **Bulgu:** Ham değerler çok çarpık (çarpıklık 7,08); 20–16.000 kırpma + log2 sonrası 0,55. Değerlerin %32,72'si alt sınıra yığılıyor.
+   **Çıkarım:** Kırpma + log2 Golub için standart ön işleme olmalı; her değere ayrı uygulandığı için sızıntı yaratmaz.
+
+4. **Bulgu:** 1.971 prob hiçbir hastada 'Present' değil; 58 AFFX kontrol probunun 34'ü de öyle.
+   **Çıkarım:** AFFX probları atılmalı; düşük ifade/varyans filtresi uygulanmalı ama yalnızca CV eğitim katlarında öğrenilmeli.
+
+5. **Bulgu:** Hasta ortalamaları arasında yaklaşık 2,03 kat fark var (log2 sonrası medyanlar 6,09–7,65); bu fark sınıfla ilişkili değil.
+   **Çıkarım:** Hasta bazında normalizasyon (ör. medyana göre ortalama) pipeline'da ablasyonla denenmeli.
+
+6. **Bulgu:** PCA'da sınıf bilgisi verilmeden PC1 ALL ile AML'yi ayırıyor (p = 1.8e-10); ancak PC1+PC2 varyansın yalnızca %17,67'sini açıklıyor ve sınıf siluet skoru 0,29–0,30.
+   **Çıkarım:** Sınıf sinyali güçlü ama tek yöne sığmıyor; öznitelik seçimi ya da çok bileşenli doğrusal modeller uygun.
+
+7. **Bulgu:** Yalnız eğitim setinde 602 gen BH-FDR q < 0,05 ile anlamlı (410'u en az 2 kat farklı); en iyi 50 genle kümeleme sınıflarla ARI = 0,79 uyumlu.
+   **Çıkarım:** Az genle iyi ayrım mümkün; ama gen seçimi nested CV'nin her katında ayrı yapılmalı (seçim yanlılığı).
+
+8. **Bulgu:** Sınıf oranları dengesiz: Golub'da %65,3 ALL; test setinde AML oranı eğitimden yüksek (eğitimde %28,9, testte %41,2).
+   **Çıkarım:** Stratified bölme, class_weight ve dengeli doğruluk/ROC-AUC gibi dengesizliğe duyarlı metrikler kullanılmalı.
+
+9. **Bulgu:** Golub eğitim–test arasında hafif ama yaygın batch farkı: yalnız ALL'de 834 gen KS p < 0,05 (beklenen 245), FDR ile 22; hasta medyanına göre ortalayınca 2'ye iniyor.
+   **Çıkarım:** Batch farkının çoğu ölçek kayması; hasta bazında normalizasyon bunu büyük ölçüde gideriyor.
+
+10. **Bulgu:** MILE'da 750 ALL ve 542 AML var; veri quantile normalize, 0–1 ölçeğinde ve log benzeri (çarpıklık 0,70). Ortak gen sayısı 4.975.
+   **Çıkarım:** MILE'a kırpma + log2 uygulanmamalı; iki veri seti ortak genler üzerinden, her biri kendi içinde ölçeklenerek kullanılmalı.
+
+11. **Bulgu:** Ham birleştirmede veri seti farkı her şeyi bastırıyor (veri seti siluet 0,99, sınıf -0,00); gen bazında z-skor sonrası sınıf siluet 0,35, veri seti -0,18.
+   **Çıkarım:** Golub'da eğitilen model MILE'a uygulanacaksa genler her veri setinde ayrı ölçeklenmeli.
+
+12. **Bulgu:** Golub eğitimde anlamlı genlerin %86,0'ı MILE'da da aynı yönde farklı; en iyi 50 genin 47'si tutarlı. Ters çıkanlar: CDC25A, DYNLL1, UBE2V2.
+   **Çıkarım:** Golub'da seçilen genler platformlar arası büyük ölçüde geçerli (AS2 için olumlu işaret); tutarsız genler yorumlanabilirlik bölümünde tartışılmalı.
+
+### Rapordaki `\todo{koddan}` alanları
+
+| Raporda yeri | Değer | Kaynak |
+|---|---|---|
+| Tablo III, MILE $n$ (ALL+AML) | 1.292 | `src/eda_mile.py` |
+| Tablo III, MILE AML sayısı | 542 | `src/eda_mile.py` |
+| Tablo III, MILE ölçeği | Quantile normalize, 0–1 ölçeğinde, log benzeri | `src/eda_mile.py` |
+| Bölüm III-D, ortak gen sayısı | 4.975 | `src/eda_mile.py` |
+| Tablo III, MILE $p$ (doğrulama) | 54.675 prob seti (raporda 54.613 yazıyor) | `src/eda_mile.py` |
+| AS3, Golub sınıf oranı (doğrulama) | %65 ALL / %35 AML | `src/validate_golub.py` |
+
+LaTeX taslağı: `reports/eda_latex_taslak.tex`
