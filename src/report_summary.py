@@ -159,7 +159,10 @@ def fig(path: str, caption: str, label: str, wide: bool = False, optional: bool 
     """Bir şekil bloğu yazıyoruz. İki sütunluk şekiller figure* ile. İsteğe bağlı olanlar yorum satırı."""
     env = "figure*" if wide else "figure"
     width = "\\textwidth" if wide else "\\columnwidth"
-    block = (f"\\begin{{{env}}}[t]\n\\centering\n\\includegraphics[width={width}]{{../{path}}}\n"
+    # Sadece dosya adını yazıyoruz; klasörü raporun başındaki \graphicspath buluyor.
+    # Böylece aynı metin hem Overleaf'te (figures/) hem yerelde (../figures/) çalışıyor.
+    name = path.split("/")[-1]
+    block = (f"\\begin{{{env}}}[t]\n\\centering\n\\includegraphics[width={width}]{{{name}}}\n"
              f"\\caption{{{caption}}}\n\\label{{{label}}}\n\\end{{{env}}}")
     if optional:
         block = "\n".join("% " + ln for ln in block.splitlines())
@@ -174,7 +177,7 @@ def latex(R: dict) -> str:
     out.append(r"""% =====================================================================
 % EDA bölümü için ÖNERİLEN taslak metin. Otomatik üretildi: python scripts/run_eda.py
 % Bütün sayılar kodun çıktısından geliyor. Kendi cümlelerinle uyarlayıp ara_rapor.tex'e ekle.
-% Şekil yolları reports/ klasörüne göre (../figures/...). Overleaf'te klasör yapısına göre düzelt.
+% Şekillerde sadece dosya adı var; rapor önsözüne \graphicspath{{figures/}{../figures/}} eklenmeli.
 % 6 sayfa sınırı için ana metne 5-6 şekil yeter; isteğe bağlı şekiller yorum satırı olarak duruyor.
 % =====================================================================
 
@@ -222,10 +225,35 @@ Bütün analizler Python ile yapılmış ve tek komutla (\texttt{python scripts/
         f"(``Present'' oranı {p(r2['call_table']['P'].min(), 1)}--{p(r2['call_table']['P'].max(), 1)}). "
         f"{tr_int(r2['never_P_all'])} prob hiçbir hastada ``Present'' değildir; 58 AFFX kontrol probunun "
         f"{r2['never_P_affx']}'ü de bu gruptadır.")
+    # MILE'ın veri kalitesi: yönerge EDA'yı iki veri seti için de istiyor
+    tis = r7["tissue_counts"]
+    bm = int(tis.xs("bone marrow", level="tissue").sum())
+    pb = int(tis.xs("peripheral blood", level="tissue").sum())
+    out.append(
+        f"\nMILE matrisinde {tr_int(r7['n_probes_raw'])} prob bulunmaktadır; bunların {r7['n_all_nan']}'i (tamamı AFFX "
+        f"kontrol probu) bütün hastalarda boştur ve çıkarıldıktan sonra eksik değer kalmamaktadır. Değerler 0--1 "
+        f"aralığındadır ve negatif değer yoktur. Her hastanın medyanı aynıdır ({tr(r7['sample_median_min'], 4)}) ve "
+        f"sıralanmış hasta değerleri ortak sıralamadan en fazla {tr(r7['sorted_max_diff'], 4)} sapmaktadır; bu, verinin "
+        f"quantile normalize edildiğini göstermektedir. Çarpıklık {tr(r7['skew'])} ile Golub'un log$_2$ sonrası "
+        f"değerine yakındır, bir kez daha log alındığında ise {tr(r7['skew_after_log'])} olmaktadır; bu nedenle MILE "
+        f"verisinin zaten log benzeri bir ölçekte olduğu ve kırpma ile log$_2$ dönüşümünün uygulanmaması gerektiği "
+        f"sonucuna varılmıştır. Seçilen ALL ve AML hastalarının {tr_int(bm)}'i kemik iliği, {pb}'i periferik kan "
+        f"örneğidir.")
     out.append(fig("figures/fig02_pma_dagilimi.pdf", "Set ve sınıfa göre P/M/A çağrı dağılımı.", "fig:pma",
                    optional=True))
 
     out.append("\n\\subsection{Betimsel İstatistikler ve Dönüşüm}")
+    # Sınıf dağılımı: yönergenin "betimsel istatistikler ve sınıf dağılımı" maddesi için
+    g_all = r1["train_counts"]["ALL"] + r1["test_counts"]["ALL"]
+    g_aml = r1["train_counts"]["AML"] + r1["test_counts"]["AML"]
+    m_n = r7["n_all"] + r7["n_aml"]
+    out.append(
+        f"Sınıf dağılımı iki veri setinde de dengesizdir: Golub'da {g_all} ALL ve {g_aml} AML "
+        f"({p(100 * g_all / (g_all + g_aml), 1)} ALL), MILE'da {r7['n_all']} ALL ve {r7['n_aml']} AML "
+        f"({p(100 * r7['n_all'] / m_n, 1)} ALL) bulunmaktadır. Golub test setinde AML oranı eğitim setinden "
+        f"yüksektir ({p(r6['aml_frac_train'], 1)} ve {p(r6['aml_frac_test'], 1)}). MILE'da AML grubunun "
+        f"{r7['subclass_counts'].loc[('AML', 'AML with normal karyotype + other abnormalities')]}'i tek bir alt sınıfa "
+        f"(normal karyotip ve diğer anomaliler) aittir.\n")
     out.append(
         f"Ham ifade değerleri aşırı sağa çarpıktır (çarpıklık {tr(r3['skew_raw'])}). Dudoit ve ark.~\\cite{{dudoit2002}} "
         f"izlenerek değerler 20--16.000 aralığına kırpılmış ve log$_2$ dönüşümü uygulanmıştır; çarpıklık "
@@ -248,10 +276,16 @@ Bütün analizler Python ile yapılmış ve tek komutla (\texttt{python scripts/
         f"ayırmaktadır (Mann--Whitney {sci(r4['best_pc_class_p'])}; Şekil~\\ref{{fig:pca}}), bu da Golub ve "
         f"ark.~\\cite{{golub1999}}'nin gözlemiyle uyumludur. Ancak ayrım kısmidir: sınıf siluet skoru PCA, t-SNE ve "
         f"UMAP'te {tr(r4['sil_class_tsne'])}--{tr(r4['sil_class_umap'])} aralığındadır. Eğitim ve test hastaları "
-        f"büyük ölçüde iç içedir (set siluet skoru {tr(r4['sil_set_pca2'])}--{tr(r4['sil_set_tsne'])}).")
+        f"büyük ölçüde iç içedir (set siluet skoru {tr(r4['sil_set_pca2'])}--{tr(r4['sil_set_tsne'])}). t-SNE ve "
+        f"UMAP'te eğitim setindeki AML hastaları sıkı bir küme oluştururken test setindeki AML hastaları daha "
+        f"dağınıktır (Şekil~\\ref{{fig:tsne}}); bu, test AML'lerinin daha heterojen olduğuna işaret etmektedir. "
+        f"MILE'da da ortak genler üzerinde yapılan PCA iki sınıfı ayırmakta, sınıf siluet skoru Golub'dakinden "
+        f"yüksektir ({tr(r8['sil_class_own_MILE'])} ve {tr(r8['sil_class_own_Golub'])}).")
     out.append(fig("figures/fig04b_pca_pc1_pc2.pdf", "PC1--PC2 düzlemi: (a) sınıfa göre, (b) sete göre.", "fig:pca"))
     out.append(fig("figures/fig04a_pca_varyans.pdf", "PCA açıklanan varyans.", "fig:pcavar", optional=True))
-    out.append(fig("figures/fig04c_tsne_umap.pdf", "t-SNE ve UMAP gömmeleri.", "fig:tsne", optional=True))
+    out.append(fig("figures/fig04c_tsne_umap.pdf",
+                   "Golub verisinin (a) t-SNE ve (b) UMAP gömmeleri; daireler eğitim, üçgenler test hastaları.",
+                   "fig:tsne"))
 
     out.append("\n\\subsection{Ayırt Edici Genler}")
     out.append(

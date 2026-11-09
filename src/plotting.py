@@ -22,7 +22,9 @@ plt.rcParams.update({
 def save_fig(fig, name: str):
     """Şekli hem PDF (vektörel, rapor için) hem de 300 dpi PNG (video ve önizleme için) olarak kaydediyoruz."""
     FIGURES.mkdir(exist_ok=True)
-    fig.savefig(FIGURES / f"{name}.pdf", bbox_inches="tight")
+    # PDF'in içine oluşturma tarihi yazılmasın: yoksa içerik aynı olsa bile her çalıştırmada dosya
+    # "değişmiş" görünüyor ve git geçmişi gereksiz yere kirleniyor
+    fig.savefig(FIGURES / f"{name}.pdf", bbox_inches="tight", metadata={"CreationDate": None})
     fig.savefig(FIGURES / f"{name}.png", dpi=300, bbox_inches="tight")
     plt.close(fig)
     return f"figures/{name}.pdf"
