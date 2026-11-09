@@ -116,7 +116,9 @@ def mile_eda() -> dict:
     common = sorted(set(g_genes.columns) & set(m_genes.columns))
     out["n_common"] = len(common)
     # 8. adımda tekrar okumak için ortak genlerdeki matrisleri kaydediyoruz
-    g_genes[common].assign(_set=split, _cancer=yg.map(INV)).to_pickle(PROCESSED / "golub_common_genes.pkl")
+    # load_both() etiketleri zaten "ALL"/"AML" yazısı olarak veriyor; tekrar çevirmiyoruz
+    g_genes[common].assign(_set=split, _cancer=yg).to_pickle(PROCESSED / "golub_common_genes.pkl")
+    assert g_genes.index.equals(yg.index)
     m_genes[common].assign(_cancer=y).to_pickle(PROCESSED / "mile_common_genes.pkl")
     return out
 

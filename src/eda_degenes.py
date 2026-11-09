@@ -43,9 +43,12 @@ def welch(L: pd.DataFrame, y: pd.Series) -> pd.DataFrame:
     AML'de 11 hasta var ve varyanslar da farklı olabilir; Welch bu varsayımı yapmıyor.
     """
     a, b = L[y == "ALL"], L[y == "AML"]
-    # Her iki sınıfta da bütün değerleri 20'ye kırpılmış genlerin varyansı sıfır; t-testi bunlar için
-    # hesaplanamıyor. Bunları testten çıkarıp sayılarını ayrıca raporluyoruz.
-    const = (a.std() == 0) & (b.std() == 0)
+    # Her iki sınıfta da bütün değerleri 20'ye kırpılmış genler tamamen sabit; aslında hiç fark yok.
+    # Bunları testten çıkarıp sayılarını ayrıca raporluyoruz.
+    # Dikkat: "std() == 0" diye kontrol etmek işe yaramıyor. Bilgisayardaki yuvarlama yüzünden sabit
+    # bir sütunun standart sapması tam 0 değil, çok küçük bir sayı çıkıyor; t-testi de bunu sahte bir
+    # büyük farka (t ≈ -5,1) çeviriyordu. O yüzden "en büyük değer = en küçük değer" diye bakıyoruz.
+    const = (a.max() == a.min()) & (b.max() == b.min())
     a, b = a.loc[:, ~const], b.loc[:, ~const]
 
     t, p = ttest_ind(b, a, equal_var=False)  # AML - ALL: pozitif t "AML'de daha yüksek" demek

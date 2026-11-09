@@ -9,6 +9,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 from src.config import ROOT
 from src.eda_batch import batch
+from src.eda_compare import compare
 from src.eda_degenes import FC, FDR, TOP, degenes
 from src.eda_dimred import dimred
 from src.eda_distribution import distribution
@@ -206,6 +207,40 @@ def step7() -> list[str]:
     return lines + [""]
 
 
+def step8() -> list[str]:
+    r = compare()
+    src = "`src/eda_compare.py`"
+    fs, fp, fd = f"`{r['fig_scale']}`", f"`{r['fig_pca']}`", f"`{r['fig_dir']}`"
+    rows = [
+        ("Ortak gen / Golub hasta / MILE hasta", f"{r['n_common']} / {r['n_golub']} / {r['n_mile']}", src),
+        ("Gen ortalamalarının sıralama uyumu (Spearman ρ)", f"{r['rho_means']:.2f}", fs),
+        ("Ham birleştirme PCA: PC1 açıklanan varyans", pct(r["pc1_raw"]), fp),
+        ("Ham birleştirme PCA: siluet (veri seti / sınıf)", f"{r['sil_ds_raw']:.2f} / {r['sil_class_raw']:.2f}", fp),
+        ("Gen bazında z-skor PCA: PC1 açıklanan varyans", pct(r["pc1_z"]), fp),
+        ("Gen bazında z-skor PCA: siluet (veri seti / sınıf)", f"{r['sil_ds_z']:.2f} / {r['sil_class_z']:.2f}", fp),
+        (f"z-skor PCA'da sınıfı en iyi ayıran bileşen", f"PC{r['z_best_pc']}", fp),
+        (f"Bu bileşende AML − ALL medyan farkı (Mann–Whitney p): Golub",
+         f"{r['z_best_pc_Golub_diff']:.1f} (p = {r['z_best_pc_Golub_p']:.1e})", fp),
+        (f"Bu bileşende AML − ALL medyan farkı (Mann–Whitney p): MILE",
+         f"{r['z_best_pc_MILE_diff']:.1f} (p = {r['z_best_pc_MILE_p']:.1e})", fp),
+        ("Kendi PCA'sında sınıf siluet skoru: Golub / MILE",
+         f"{r['sil_class_own_Golub']:.2f} / {r['sil_class_own_MILE']:.2f}", src),
+        ("Golub eğitimde anlamlı gen (ortak genlerde, q < 0.05)", r["golub_sig"], fd),
+        ("MILE'da anlamlı gen (q < 0.05)", r["mile_sig"], src),
+        ("Bütün ortak genlerde aynı yön oranı (kıyas)", pct(r["same_dir_all"]), fd),
+        ("Golub'da anlamlı genlerde MILE ile aynı yön oranı", pct(r["same_dir_sig"]), fd),
+        ("Golub'da anlamlı → MILE'da aynı yönde anlamlı / ters yönde anlamlı",
+         f"{r['same_dir_sig_mile_sig']} / {r['opp_dir_sig_mile_sig']}", fd),
+        ("Golub t ile MILE t sıralama uyumu (Spearman ρ)", f"{r['rho_t']:.2f}", fd),
+        (f"Golub en iyi {TOP} gen: MILE'da aynı yön / aynı yönde anlamlı",
+         f"{r['top_same_dir']} / {r['top_same_dir_mile_sig']}", fd),
+        (f"Golub en iyi {TOP} genden ters yönde olanlar", ", ".join(r["top_opposite"]) or "—", fd),
+    ]
+    lines = ["## 8. Golub vs. MILE (ortak genler)", "", "| Bulgu | Sayı | Kaynak |", "|---|---|---|"]
+    lines += [f"| {k} | {v} | {s} |" for k, v, s in rows]
+    return lines + [""]
+
+
 def step1() -> list[str]:
     r = validate()
     src = "`src/validate_golub.py` (`load_golub.py` üzerinden)"
@@ -245,6 +280,7 @@ if __name__ == "__main__":
     md += step5()
     md += step6()
     md += step7()
+    md += step8()
     REPORT.parent.mkdir(exist_ok=True)
     REPORT.write_text("\n".join(md), encoding="utf-8")
     print("\n".join(md))

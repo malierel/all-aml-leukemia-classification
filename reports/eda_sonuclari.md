@@ -88,14 +88,14 @@ Test CSV ham sütun sırası: `[39, 40, 42, 47, 48, 49, 41, 43, 44, 45, 46, 70, 
 | Bulgu | Sayı | Kaynak |
 |---|---|---|
 | Kullanılan veri | Yalnızca eğitim seti (38 hasta), AFFX hariç 7071 gen | `src/eda_degenes.py` |
-| Test edilen gen (sıfır varyanslı çıkarıldıktan sonra) | 7071 (çıkarılan: 0) | `src/eda_degenes.py` |
-| Ham p < 0.05 olan gen / şans eseri beklenen | 1975 / 354 | `src/eda_degenes.py` |
-| BH-FDR q < 0.05 anlamlı gen | 1274 | `figures/fig05a_volcano.pdf` |
-| BH-FDR q < 0.01 anlamlı gen | 815 | `src/eda_degenes.py` |
-| Anlamlı ve mutlak log2FC ≥ 1 (≥ 2 kat) gen | 497 | `figures/fig05a_volcano.pdf` |
-| Anlamlı genlerden AML'de yüksek / ALL'de yüksek | 369 / 905 | `figures/fig05a_volcano.pdf` |
+| Test edilen gen (sıfır varyanslı çıkarıldıktan sonra) | 6595 (çıkarılan: 476) | `src/eda_degenes.py` |
+| Ham p < 0.05 olan gen / şans eseri beklenen | 1499 / 330 | `src/eda_degenes.py` |
+| BH-FDR q < 0.05 anlamlı gen | 602 | `figures/fig05a_volcano.pdf` |
+| BH-FDR q < 0.01 anlamlı gen | 224 | `src/eda_degenes.py` |
+| Anlamlı ve mutlak log2FC ≥ 1 (≥ 2 kat) gen | 410 | `figures/fig05a_volcano.pdf` |
+| Anlamlı genlerden AML'de yüksek / ALL'de yüksek | 274 / 328 | `figures/fig05a_volcano.pdf` |
 | En iyi 50 gen: AML'de yüksek / ALL'de yüksek | 27 / 23 | `figures/fig05b_isi_haritasi_top50.pdf` |
-| En iyi 50 gendeki en büyük q | 3.3e-04 | `figures/fig05b_isi_haritasi_top50.pdf` |
+| En iyi 50 gendeki en büyük q | 5.7e-04 | `figures/fig05b_isi_haritasi_top50.pdf` |
 | Hasta kümelemesi (2 küme) – sınıf uyumu (düzeltilmiş Rand) | 0.79 | `figures/fig05b_isi_haritasi_top50.pdf` |
 | Küme 1 (ALL / AML) | 2 / 11 | `figures/fig05b_isi_haritasi_top50.pdf` |
 | Küme 2 (ALL / AML) | 25 / 0 | `figures/fig05b_isi_haritasi_top50.pdf` |
@@ -105,16 +105,16 @@ En anlamlı 10 gen (Welch t-testi, eğitim seti):
 
 | Prob | Açıklama | log2FC (AML − ALL) | q |
 |---|---|---|---|
-| M27891_at | CST3 Cystatin C (amyloid angiopathy and  | 5.92 | 3.1e-06 |
-| X95735_at | Zyxin | 3.6 | 4.3e-06 |
-| M55150_at | FAH Fumarylacetoacetate | 1.31 | 9.4e-06 |
-| M28170_at | CD19 CD19 antigen | -2.63 | 2.0e-05 |
-| X52142_at | CTPS CTP synthetase | -2.37 | 2.2e-05 |
-| Y12670_at | LEPR Leptin receptor | 1.75 | 3.9e-05 |
-| M81933_at | CDC25A Cell division cycle 25A | 1.76 | 3.9e-05 |
-| U50136_rna1_at | Leukotriene C4 synthase (LTC4S) gene | 1.4 | 3.9e-05 |
-| M31523_at | TCF3 Transcription factor 3 (E2A immunog | -1.95 | 3.9e-05 |
-| U12471_cds1_at | Thrombospondin-p50 gene extracted from H | 1.03 | 6.4e-05 |
+| M27891_at | CST3 Cystatin C (amyloid angiopathy and  | 5.92 | 2.9e-06 |
+| X95735_at | Zyxin | 3.6 | 4.0e-06 |
+| M55150_at | FAH Fumarylacetoacetate | 1.31 | 8.8e-06 |
+| M28170_at | CD19 CD19 antigen | -2.63 | 1.8e-05 |
+| X52142_at | CTPS CTP synthetase | -2.37 | 2.1e-05 |
+| Y12670_at | LEPR Leptin receptor | 1.75 | 3.7e-05 |
+| M81933_at | CDC25A Cell division cycle 25A | 1.76 | 3.7e-05 |
+| U50136_rna1_at | Leukotriene C4 synthase (LTC4S) gene | 1.4 | 3.7e-05 |
+| M31523_at | TCF3 Transcription factor 3 (E2A immunog | -1.95 | 3.7e-05 |
+| U12471_cds1_at | Thrombospondin-p50 gene extracted from H | 1.03 | 6.0e-05 |
 
 Bütün genlerin sonuçları: `data/processed/golub_train_welch.csv`
 
@@ -178,3 +178,26 @@ MILE alt sınıfları:
 | AML | AML with t(11q23)/MLL | 38 |
 | AML | AML with t(15;17) | 37 |
 | AML | AML with t(8;21) | 40 |
+
+## 8. Golub vs. MILE (ortak genler)
+
+| Bulgu | Sayı | Kaynak |
+|---|---|---|
+| Ortak gen / Golub hasta / MILE hasta | 4975 / 72 / 1292 | `src/eda_compare.py` |
+| Gen ortalamalarının sıralama uyumu (Spearman ρ) | 0.52 | `figures/fig08a_golub_mile_olcek.pdf` |
+| Ham birleştirme PCA: PC1 açıklanan varyans | %97.19 | `figures/fig08b_birlesik_pca.pdf` |
+| Ham birleştirme PCA: siluet (veri seti / sınıf) | 0.99 / -0.00 | `figures/fig08b_birlesik_pca.pdf` |
+| Gen bazında z-skor PCA: PC1 açıklanan varyans | %9.28 | `figures/fig08b_birlesik_pca.pdf` |
+| Gen bazında z-skor PCA: siluet (veri seti / sınıf) | -0.18 / 0.35 | `figures/fig08b_birlesik_pca.pdf` |
+| z-skor PCA'da sınıfı en iyi ayıran bileşen | PC1 | `figures/fig08b_birlesik_pca.pdf` |
+| Bu bileşende AML − ALL medyan farkı (Mann–Whitney p): Golub | 19.0 (p = 4.5e-12) | `figures/fig08b_birlesik_pca.pdf` |
+| Bu bileşende AML − ALL medyan farkı (Mann–Whitney p): MILE | 36.3 (p = 2.5e-175) | `figures/fig08b_birlesik_pca.pdf` |
+| Kendi PCA'sında sınıf siluet skoru: Golub / MILE | 0.29 / 0.44 | `src/eda_compare.py` |
+| Golub eğitimde anlamlı gen (ortak genlerde, q < 0.05) | 480 | `figures/fig08c_yon_tutarliligi.pdf` |
+| MILE'da anlamlı gen (q < 0.05) | 3922 | `src/eda_compare.py` |
+| Bütün ortak genlerde aynı yön oranı (kıyas) | %59.68 | `figures/fig08c_yon_tutarliligi.pdf` |
+| Golub'da anlamlı genlerde MILE ile aynı yön oranı | %86.04 | `figures/fig08c_yon_tutarliligi.pdf` |
+| Golub'da anlamlı → MILE'da aynı yönde anlamlı / ters yönde anlamlı | 388 / 45 | `figures/fig08c_yon_tutarliligi.pdf` |
+| Golub t ile MILE t sıralama uyumu (Spearman ρ) | 0.44 | `figures/fig08c_yon_tutarliligi.pdf` |
+| Golub en iyi 50 gen: MILE'da aynı yön / aynı yönde anlamlı | 47 / 46 | `figures/fig08c_yon_tutarliligi.pdf` |
+| Golub en iyi 50 genden ters yönde olanlar | CDC25A (Golub t=6.9, MILE t=-4.8), DYNLL1 (Golub t=-5.9, MILE t=3.4), UBE2V2 (Golub t=-6.0, MILE t=4.4) | `figures/fig08c_yon_tutarliligi.pdf` |
