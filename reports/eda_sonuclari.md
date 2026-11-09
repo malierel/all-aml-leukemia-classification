@@ -54,3 +54,18 @@ Test CSV ham sütun sırası: `[39, 40, 42, 47, 48, 49, 41, 43, 44, 45, 46, 70, 
 | Test AML: P / M / A | %25.59 / %1.65 / %72.77 | `figures/fig02_pma_dagilimi.pdf` |
 | Eğitim ALL: P / M / A | %29.68 / %1.60 / %68.72 | `figures/fig02_pma_dagilimi.pdf` |
 | Eğitim AML: P / M / A | %27.43 / %1.65 / %70.92 | `figures/fig02_pma_dagilimi.pdf` |
+
+## 3. Dağılım ve dönüşüm
+
+| Bulgu | Sayı | Kaynak |
+|---|---|---|
+| Çarpıklık: ham / kırpma + log2 | 7.08 / 0.55 | `figures/fig03a_dagilim_ham_log.pdf` |
+| Alttan 20'ye kırpılan değer oranı | %32.72 | `src/eda_distribution.py` |
+| Üstten 16000'e kırpılan değer oranı | %0.83 | `src/eda_distribution.py` |
+| Ham ölçekte hasta ortalaması: en düşük / en yüksek | 492.6 (hasta 12) / 954.4 (hasta 20) | `src/eda_distribution.py` |
+| Ham ölçekte en yüksek / en düşük hasta ortalaması oranı | 1.94 kat | `src/eda_distribution.py` |
+| log2 sonrası hasta medyanı aralığı | 6.09 – 7.65 | `figures/fig03b_ornek_kutu.pdf` |
+| log2 sonrası hasta ortalaması aralığı | 6.52 – 7.54 | `figures/fig03b_ornek_kutu.pdf` |
+| log2 sonrası en uç iki hasta ortalaması farkı (kat) | 2.03 kat | `src/eda_distribution.py` |
+| log2 hasta ortalamalarının ortalaması: eğitim / test | 7.026 / 6.911 | `src/eda_distribution.py` |
+| log2 hasta ortalamalarının ortalaması: ALL / AML | 6.965 / 6.985 | `src/eda_distribution.py` |

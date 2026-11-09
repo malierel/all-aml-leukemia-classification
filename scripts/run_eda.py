@@ -8,6 +8,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 from src.config import ROOT
+from src.eda_distribution import distribution
 from src.eda_quality import HIGH, LOW, quality
 from src.validate_golub import validate
 
@@ -53,6 +54,30 @@ def step2() -> list[str]:
     return lines + [""]
 
 
+def step3() -> list[str]:
+    r = distribution()
+    src = "`src/eda_distribution.py`"
+    fa, fb = f"`{r['fig_hist']}`", f"`{r['fig_box']}`"
+    rows = [
+        ("Çarpıklık: ham / kırpma + log2", f"{r['skew_raw']:.2f} / {r['skew_log']:.2f}", fa),
+        (f"Alttan {LOW}'ye kırpılan değer oranı", pct(r["clipped_low_pct"]), src),
+        (f"Üstten {HIGH}'e kırpılan değer oranı", pct(r["clipped_high_pct"]), src),
+        ("Ham ölçekte hasta ortalaması: en düşük / en yüksek",
+         f"{r['raw_mean_min']:.1f} (hasta {r['raw_mean_min_id']}) / {r['raw_mean_max']:.1f} (hasta {r['raw_mean_max_id']})", src),
+        ("Ham ölçekte en yüksek / en düşük hasta ortalaması oranı", f"{r['raw_mean_ratio']:.2f} kat", src),
+        ("log2 sonrası hasta medyanı aralığı", f"{r['log_median_min']:.2f} – {r['log_median_max']:.2f}", fb),
+        ("log2 sonrası hasta ortalaması aralığı", f"{r['log_mean_min']:.2f} – {r['log_mean_max']:.2f}", fb),
+        ("log2 sonrası en uç iki hasta ortalaması farkı (kat)", f"{r['log_mean_fold']:.2f} kat", src),
+        ("log2 hasta ortalamalarının ortalaması: eğitim / test",
+         f"{r['log_mean_train']:.3f} / {r['log_mean_test']:.3f}", src),
+        ("log2 hasta ortalamalarının ortalaması: ALL / AML",
+         f"{r['log_mean_ALL']:.3f} / {r['log_mean_AML']:.3f}", src),
+    ]
+    lines = ["## 3. Dağılım ve dönüşüm", "", "| Bulgu | Sayı | Kaynak |", "|---|---|---|"]
+    lines += [f"| {k} | {v} | {s} |" for k, v, s in rows]
+    return lines + [""]
+
+
 def step1() -> list[str]:
     r = validate()
     src = "`src/validate_golub.py` (`load_golub.py` üzerinden)"
@@ -87,6 +112,7 @@ if __name__ == "__main__":
     md = ["# EDA Sonuçları", "", "Bu dosya `python scripts/run_eda.py` ile otomatik üretilir; elle düzenlemeyin.", ""]
     md += step1()
     md += step2()
+    md += step3()
     REPORT.parent.mkdir(exist_ok=True)
     REPORT.write_text("\n".join(md), encoding="utf-8")
     print("\n".join(md))

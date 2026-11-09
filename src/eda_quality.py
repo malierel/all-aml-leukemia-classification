@@ -20,9 +20,8 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 from src.config import CLASS_COLORS, FIG_WIDTH
 from src.load_golub import load_split
 from src.plotting import save_fig
+from src.preprocess import HIGH, LOW  # Kırpma sınırlarını tek yerde tutuyoruz
 
-# Dudoit ve ark. (2002) bu iki sınırı kullanıyor: 20'nin altı gürültü, 16.000'in üstü cihazın doyduğu bölge
-LOW, HIGH = 20, 16000
 INV = {0: "ALL", 1: "AML"}
 
 
