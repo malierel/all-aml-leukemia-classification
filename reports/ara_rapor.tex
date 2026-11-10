@@ -34,9 +34,6 @@ Kod: \url{https://github.com/malierel/all-aml-leukemia-classification}}}
 Akut lenfoblastik lösemi (ALL) ve akut miyeloid lösemi (AML) farklı tedavi gerektiren iki lösemi alt tipidir. Bu ara raporda, gen ifadesi mikrodizi verisinden ALL/AML ayrımı yapacak bir çalışmanın literatürü, veri setleri ve keşifsel veri analizi (EDA) sunulmuştur. Golub ve ark. (1999) verisi ana veri seti, farklı nesil bir yongayla üretilmiş çok merkezli MILE verisi (GSE13159) dış doğrulama seti olarak seçilmiştir. EDA'da PCA iki sınıfı etiket kullanmadan ayırmış, eğitim setinde 602 gen FDR sonrası anlamlı bulunmuş ve bunların \%86'sı MILE'da da aynı yönde farklılaşmıştır. İki platform arasındaki ölçek farkı, her veri setinin kendi içinde normalize edilmesini gerektirmektedir.
 \end{abstract}
 
-\begin{IEEEkeywords}
-lösemi, ALL/AML sınıflandırması, mikrodizi, gen ifadesi, öznitelik seçimi, veri sızıntısı
-\end{IEEEkeywords}
 
 % =====================================================================
 \section{Giriş}
@@ -207,7 +204,7 @@ Golub ve MILE 4.975 ortak gende karşılaştırılmıştır. Ham değerler birle
 
 % =====================================================================
 \section{Finale Kadar Plan}
-Üç yöntem aynı sızıntısız pipeline içinde (imputasyon $\rightarrow$ kırpma ve log$_2$ (yalnızca Golub) $\rightarrow$ varyans filtresi $\rightarrow$ öznitelik seçimi $\rightarrow$ ölçekleme $\rightarrow$ model) ve aynı nested CV katlarında karşılaştırılacaktır (Tablo~\ref{tab:yontem}); modüldeki karar ağacı taban çizgisi olarak raporlanacaktır.
+Finalde karşılaştırılması planlanan üç yöntem ve seçilme gerekçeleri Tablo~\ref{tab:yontem}'de verilmiştir.
 
 \begin{table}[htbp]
 \caption{Planlanan yöntemler}
