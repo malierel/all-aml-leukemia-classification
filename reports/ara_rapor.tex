@@ -64,12 +64,12 @@ Tarama IEEE Xplore, PubMed ve Google Scholar üzerinde 1999--2026 aralığında 
 \# & Sorgu & IEEE & PubMed & Scholar \\
 \midrule
 1 & ``Golub'' AND leukemia AND (classification OR ``machine learning'') & 10 & 29 & $\sim$24.300 \\
-2 & ``ALL'' AND ``AML'' AND ``gene expression'' AND (classifier OR ``feature selection'') & 27 & 0$^{*}$ & $\sim$12.300 \\
+2 & ``ALL'' AND ``AML'' AND ``gene expression'' AND (classifier OR ``feature selection'') & 27 & 44$^{*}$ & $\sim$12.300 \\
 3 & microarray AND ``feature selection'' AND ``small sample'' AND cancer & 147 & 36 & $\sim$15.500 \\
 4 & leukemia AND ``gene expression'' AND (``deep learning'' OR transformer) & 33 & 32 & $\sim$20.000 \\
 5 & (``data leakage'' OR ``selection bias'') AND microarray AND ``cross-validation'' & 11 & 14 & $\sim$17.600 \\
 \bottomrule
-\multicolumn{5}{@{}p{\columnwidth}@{}}{$\sim$: yaklaşık değer. $^{*}$Olası neden: ``all'' PubMed'de durdurma kelimesidir (stopword).}
+\multicolumn{5}{@{}p{\columnwidth}@{}}{$\sim$: yaklaşık değer. $^{*}$``all'' PubMed'de durdurma kelimesi (stopword) olduğundan bu sorgu PubMed'de kısaltmalar yerine tam hastalık adlarıyla (``acute lymphoblastic leukemia'' AND ``acute myeloid leukemia'') çalıştırılmıştır.}
 \end{tabularx}
 \end{table}
 
