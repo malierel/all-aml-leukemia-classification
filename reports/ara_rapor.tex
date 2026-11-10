@@ -2,7 +2,7 @@
 % --- Paketler ---
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[turkish]{babel}
+\usepackage[english,turkish]{babel} % english: kaynakçadaki İngilizce başlıklar doğru hecelensin diye
 \shorthandoff{=}          % babel-turkish '=' işaretini aktif yapar; tablolarda sorun çıkmasın
 \usepackage{amsmath,amssymb}
 \usepackage{graphicx}
@@ -233,30 +233,32 @@ Rastgele Orman & Doğrusal olmayan, ölçeklemeye duyarsız; öznitelik önem sk
 EDA kodunun ve rapor metninin hazırlanmasında Claude Opus 5.5'ten, literatür taramasındaki makalelerden bilgi edinmede Google NotebookLM'den yararlanılmıştır. Tüm sayılar depodaki kodun çıktısıdır; içeriği gözden geçirip doğruladım ve sorumluluğu bana aittir.
 
 % =====================================================================
+\begin{hyphenrules}{english}
 \begin{thebibliography}{99}
-\bibitem{golub1999} T. R. Golub \textit{et al.}, ``Molecular classification of cancer: Class discovery and class prediction by gene expression monitoring,'' \textit{Science}, vol. 286, no. 5439, pp. 531--537, 1999, doi: 10.1126/science.286.5439.531.
-\bibitem{furey2000} T. S. Furey \textit{et al.}, ``Support vector machine classification and validation of cancer tissue samples using microarray expression data,'' \textit{Bioinformatics}, vol. 16, no. 10, pp. 906--914, 2000, doi: 10.1093/bioinformatics/16.10.906.
-\bibitem{guyon2002} I. Guyon, J. Weston, S. Barnhill, and V. Vapnik, ``Gene selection for cancer classification using support vector machines,'' \textit{Mach. Learn.}, vol. 46, pp. 389--422, 2002, doi: 10.1023/A:1012487302797.
-\bibitem{dudoit2002} S. Dudoit, J. Fridlyand, and T. P. Speed, ``Comparison of discrimination methods for the classification of tumors using gene expression data,'' \textit{J. Amer. Stat. Assoc.}, vol. 97, no. 457, pp. 77--87, 2002, doi: 10.1198/016214502753479248.
-\bibitem{ambroise2002} C. Ambroise and G. J. McLachlan, ``Selection bias in gene extraction on the basis of microarray gene-expression data,'' \textit{Proc. Natl. Acad. Sci. USA}, vol. 99, no. 10, pp. 6562--6566, 2002, doi: 10.1073/pnas.102102699.
-\bibitem{saeys2007} Y. Saeys, I. Inza, and P. Larrañaga, ``A review of feature selection techniques in bioinformatics,'' \textit{Bioinformatics}, vol. 23, no. 19, pp. 2507--2517, 2007, doi: 10.1093/bioinformatics/btm344.
-\bibitem{diaz2006} R. Díaz-Uriarte and S. Alvarez de Andrés, ``Gene selection and classification of microarray data using random forest,'' \textit{BMC Bioinformatics}, vol. 7, art. 3, 2006, doi: 10.1186/1471-2105-7-3.
-\bibitem{varma2006} S. Varma and R. Simon, ``Bias in error estimation when using cross-validation for model selection,'' \textit{BMC Bioinformatics}, vol. 7, art. 91, 2006, doi: 10.1186/1471-2105-7-91.
-\bibitem{kapoor2023} S. Kapoor and A. Narayanan, ``Leakage and the reproducibility crisis in machine-learning-based science,'' \textit{Patterns}, vol. 4, no. 9, art. 100804, 2023, doi: 10.1016/j.patter.2023.100804.
-\bibitem{haferlach2010} T. Haferlach \textit{et al.}, ``Clinical utility of microarray-based gene expression profiling in the diagnosis and subclassification of leukemia: Report from the International Microarray Innovations in Leukemia Study Group,'' \textit{J. Clin. Oncol.}, vol. 28, no. 15, pp. 2529--2537, 2010, doi: 10.1200/JCO.2009.23.4732.
-\bibitem{kohlmann2008} A. Kohlmann \textit{et al.}, ``An international standardization programme towards the application of gene expression profiling in routine leukaemia diagnostics: The Microarray Innovations in LEukemia study prephase,'' \textit{Br. J. Haematol.}, vol. 142, no. 5, pp. 802--807, 2008, doi: 10.1111/j.1365-2141.2008.07261.x.
-\bibitem{armstrong2002} S. A. Armstrong \textit{et al.}, ``MLL translocations specify a distinct gene expression profile that distinguishes a unique leukemia,'' \textit{Nat. Genet.}, vol. 30, no. 1, pp. 41--47, 2002, doi: 10.1038/ng765.
-\bibitem{almazrua2022} H. AlMazrua and H. Alshamlan, ``A comprehensive survey of recent hybrid feature selection methods in cancer microarray gene expression data,'' \textit{IEEE Access}, vol. 10, pp. 71427--71449, 2022, doi: 10.1109/ACCESS.2022.3185226.
-\bibitem{elemam2022} T. Elemam and M. Elshrkawey, ``A highly discriminative hybrid feature selection algorithm for cancer diagnosis,'' \textit{Sci. World J.}, vol. 2022, art. 1056490, 2022, doi: 10.1155/2022/1056490.
-\bibitem{grinsztajn2022} L. Grinsztajn, E. Oyallon, and G. Varoquaux, ``Why do tree-based models still outperform deep learning on typical tabular data?,'' in \textit{Proc. NeurIPS}, 2022; ön baskı: arXiv:2207.08815, doi: 10.48550/arXiv.2207.08815.
-\bibitem{osama2023} S. Osama, H. Shaban, and A. A. Ali, ``Gene reduction and machine learning algorithms for cancer classification based on microarray gene expression data: A comprehensive review,'' \textit{Expert Syst. Appl.}, vol. 213, art. 118946, 2023, doi: 10.1016/j.eswa.2022.118946.
-\bibitem{alharbi2023} F. Alharbi and A. Vakanski, ``Machine learning methods for cancer classification using gene expression data: A review,'' \textit{Bioengineering}, vol. 10, no. 2, art. 173, 2023, doi: 10.3390/bioengineering10020173.
-\bibitem{ilyas2023} M. Ilyas, K. M. Aamir, S. Manzoor, and M. Deriche, ``Linear programming based computational technique for leukemia classification using gene expression profile,'' \textit{PLOS ONE}, vol. 18, no. 10, art. e0292172, 2023, doi: 10.1371/journal.pone.0292172.
-\bibitem{mallick2023} P. K. Mallick \textit{et al.}, ``Convergent learning--based model for leukemia classification from gene expression,'' \textit{Pers. Ubiquitous Comput.}, vol. 27, pp. 1103--1110, 2023, doi: 10.1007/s00779-020-01467-3.
-\bibitem{yaqoob2024} A. Yaqoob \textit{et al.}, ``Optimizing cancer classification: A hybrid RDO-XGBoost approach for feature selection and predictive insights,'' \textit{Cancer Immunol. Immunother.}, vol. 73, no. 12, art. 261, 2024, doi: 10.1007/s00262-024-03843-x.
-\bibitem{chen2024} Y. Chen and J. Zou, ``Simple and effective embedding model for single-cell biology built from ChatGPT,'' \textit{Nat. Biomed. Eng.}, 2024, doi: 10.1038/s41551-024-01284-6.
-\bibitem{hollmann2025} N. Hollmann \textit{et al.}, ``Accurate predictions on small data with a tabular foundation model,'' \textit{Nature}, vol. 637, no. 8045, pp. 319--326, 2025, doi: 10.1038/s41586-024-08328-6.
-\bibitem{zhou2025} S. Zhou, V. Agarwal, A. Gopinath, and T. Kassis, ``The limitations of TabPFN for high-dimensional RNA-seq analysis,'' \textit{bioRxiv} (ön baskı), 2025, doi: 10.1101/2025.08.15.670537.
+\bibitem{golub1999} T. R. Golub \textit{et al.}, ``Molecular classification of cancer: Class discovery and class prediction by gene expression monitoring,'' \textit{Science}, vol. 286, no. 5439, pp. 531--537, 1999, doi: \url{10.1126/science.286.5439.531}.
+\bibitem{furey2000} T. S. Furey \textit{et al.}, ``Support vector machine classification and validation of cancer tissue samples using microarray expression data,'' \textit{Bioinformatics}, vol. 16, no. 10, pp. 906--914, 2000, doi: \url{10.1093/bioinformatics/16.10.906}.
+\bibitem{guyon2002} I. Guyon, J. Weston, S. Barnhill, and V. Vapnik, ``Gene selection for cancer classification using support vector machines,'' \textit{Mach. Learn.}, vol. 46, pp. 389--422, 2002, doi: \url{10.1023/A:1012487302797}.
+\bibitem{dudoit2002} S. Dudoit, J. Fridlyand, and T. P. Speed, ``Comparison of discrimination methods for the classification of tumors using gene expression data,'' \textit{J. Amer. Stat. Assoc.}, vol. 97, no. 457, pp. 77--87, 2002, doi: \url{10.1198/016214502753479248}.
+\bibitem{ambroise2002} C. Ambroise and G. J. McLachlan, ``Selection bias in gene extraction on the basis of microarray gene-expression data,'' \textit{Proc. Natl. Acad. Sci. USA}, vol. 99, no. 10, pp. 6562--6566, 2002, doi: \url{10.1073/pnas.102102699}.
+\bibitem{saeys2007} Y. Saeys, I. Inza, and P. Larrañaga, ``A review of feature selection techniques in bioinformatics,'' \textit{Bioinformatics}, vol. 23, no. 19, pp. 2507--2517, 2007, doi: \url{10.1093/bioinformatics/btm344}.
+\bibitem{diaz2006} R. Díaz-Uriarte and S. Alvarez de Andrés, ``Gene selection and classification of microarray data using random forest,'' \textit{BMC Bioinformatics}, vol. 7, art. 3, 2006, doi: \url{10.1186/1471-2105-7-3}.
+\bibitem{varma2006} S. Varma and R. Simon, ``Bias in error estimation when using cross-validation for model selection,'' \textit{BMC Bioinformatics}, vol. 7, art. 91, 2006, doi: \url{10.1186/1471-2105-7-91}.
+\bibitem{kapoor2023} S. Kapoor and A. Narayanan, ``Leakage and the reproducibility crisis in machine-learning-based science,'' \textit{Patterns}, vol. 4, no. 9, art. 100804, 2023, doi: \url{10.1016/j.patter.2023.100804}.
+\bibitem{haferlach2010} T. Haferlach \textit{et al.}, ``Clinical utility of microarray-based gene expression profiling in the diagnosis and subclassification of leukemia: Report from the International Microarray Innovations in Leukemia Study Group,'' \textit{J. Clin. Oncol.}, vol. 28, no. 15, pp. 2529--2537, 2010, doi: \url{10.1200/JCO.2009.23.4732}.
+\bibitem{kohlmann2008} A. Kohlmann \textit{et al.}, ``An international standardization programme towards the application of gene expression profiling in routine leukaemia diagnostics: The Microarray Innovations in LEukemia study prephase,'' \textit{Br. J. Haematol.}, vol. 142, no. 5, pp. 802--807, 2008, doi: \url{10.1111/j.1365-2141.2008.07261.x}.
+\bibitem{armstrong2002} S. A. Armstrong \textit{et al.}, ``MLL translocations specify a distinct gene expression profile that distinguishes a unique leukemia,'' \textit{Nat. Genet.}, vol. 30, no. 1, pp. 41--47, 2002, doi: \url{10.1038/ng765}.
+\bibitem{almazrua2022} H. AlMazrua and H. Alshamlan, ``A comprehensive survey of recent hybrid feature selection methods in cancer microarray gene expression data,'' \textit{IEEE Access}, vol. 10, pp. 71427--71449, 2022, doi: \url{10.1109/ACCESS.2022.3185226}.
+\bibitem{elemam2022} T. Elemam and M. Elshrkawey, ``A highly discriminative hybrid feature selection algorithm for cancer diagnosis,'' \textit{Sci. World J.}, vol. 2022, art. 1056490, 2022, doi: \url{10.1155/2022/1056490}.
+\bibitem{grinsztajn2022} L. Grinsztajn, E. Oyallon, and G. Varoquaux, ``Why do tree-based models still outperform deep learning on typical tabular data?,'' in \textit{Adv. Neural Inf. Process. Syst. (NeurIPS), Datasets and Benchmarks Track}, vol. 35, 2022, pp. 507--520, doi: \url{10.52202/068431-0037}.
+\bibitem{osama2023} S. Osama, H. Shaban, and A. A. Ali, ``Gene reduction and machine learning algorithms for cancer classification based on microarray gene expression data: A comprehensive review,'' \textit{Expert Syst. Appl.}, vol. 213, art. 118946, 2023, doi: \url{10.1016/j.eswa.2022.118946}.
+\bibitem{alharbi2023} F. Alharbi and A. Vakanski, ``Machine learning methods for cancer classification using gene expression data: A review,'' \textit{Bioengineering}, vol. 10, no. 2, art. 173, 2023, doi: \url{10.3390/bioengineering10020173}.
+\bibitem{ilyas2023} M. Ilyas, K. M. Aamir, S. Manzoor, and M. Deriche, ``Linear programming based computational technique for leukemia classification using gene expression profile,'' \textit{PLOS ONE}, vol. 18, no. 10, art. e0292172, 2023, doi: \url{10.1371/journal.pone.0292172}.
+\bibitem{mallick2023} P. K. Mallick \textit{et al.}, ``Convergent learning--based model for leukemia classification from gene expression,'' \textit{Pers. Ubiquitous Comput.}, vol. 27, pp. 1103--1110, 2023, doi: \url{10.1007/s00779-020-01467-3}.
+\bibitem{yaqoob2024} A. Yaqoob \textit{et al.}, ``Optimizing cancer classification: A hybrid RDO-XGBoost approach for feature selection and predictive insights,'' \textit{Cancer Immunol. Immunother.}, vol. 73, no. 12, art. 261, 2024, doi: \url{10.1007/s00262-024-03843-x}.
+\bibitem{chen2024} Y. Chen and J. Zou, ``Simple and effective embedding model for single-cell biology built from ChatGPT,'' \textit{Nat. Biomed. Eng.}, vol. 9, pp. 483--493, 2025, doi: \url{10.1038/s41551-024-01284-6}.
+\bibitem{hollmann2025} N. Hollmann \textit{et al.}, ``Accurate predictions on small data with a tabular foundation model,'' \textit{Nature}, vol. 637, no. 8045, pp. 319--326, 2025, doi: \url{10.1038/s41586-024-08328-6}.
+\bibitem{zhou2025} S. Zhou, V. Agarwal, A. Gopinath, and T. Kassis, ``The limitations of TabPFN for high-dimensional RNA-seq analysis,'' \textit{bioRxiv} (ön baskı), 2025, doi: \url{10.1101/2025.08.15.670537}.
 \end{thebibliography}
+\end{hyphenrules}
 
 \end{document}
