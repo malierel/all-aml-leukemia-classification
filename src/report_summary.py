@@ -322,8 +322,8 @@ Bütün analizler Python ile yapılmış ve tek komutla (\texttt{python scripts/
         f"Ters yönde çıkan genler ({opp}) arasındaki CDC25A, Golub eğitim--test karşılaştırmasında da batch farkı "
         f"gösteren tek ``en iyi 50'' genidir (Şekil~\\ref{{fig:yon}}).")
     out.append(fig("figures/fig08b_birlesik_pca.pdf",
-                   "Golub ve MILE ortak genlerde birleşik PCA: (a) ham değerler, (b)--(c) gen bazında veri seti içi "
-                   "z-skor.", "fig:birlesik", wide=True))
+                   "Golub ve MILE ortak genlerde birleşik PCA: (a) ham değerler, veri setine göre; (b) gen bazında "
+                   "veri seti içi z-skor, sınıfa göre.", "fig:birlesik"))
     out.append(fig("figures/fig08c_yon_tutarliligi.pdf",
                    "Golub eğitim ve MILE t istatistikleri; renkli noktalar Golub'da anlamlı genler.", "fig:yon"))
     out.append(fig("figures/fig06a_batch_dagilim.pdf", "Golub eğitim--test karşılaştırması.", "fig:batch",

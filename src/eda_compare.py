@@ -95,10 +95,11 @@ def scatter(ax, Z, ds, y, color_by):
 
 
 def plot_pca(Z_raw, Z_z, pca_raw, pca_z, ds, y):
-    fig, axes = plt.subplots(1, 3, figsize=(FIG_WIDTH * 2, 2.2))
-    panels = [(Z_raw, pca_raw, "dataset", "(a) Ham birleştirme, veri setine göre"),
-              (Z_z, pca_z, "dataset", "(b) Gen bazında z-skor, veri setine göre"),
-              (Z_z, pca_z, "class", "(c) Gen bazında z-skor, sınıfa göre")]
+    # Rapor sütununa sığsın diye iki panel: solda ham birleştirme (veri setine göre renkli),
+    # sağda z-skor sonrası (sınıfa göre renkli; yıldız/daire hangi veri setinden geldiğini gösteriyor)
+    fig, axes = plt.subplots(1, 2, figsize=(FIG_WIDTH, 2.1))
+    panels = [(Z_raw, pca_raw, "dataset", "(a) Ham birleştirme"),
+              (Z_z, pca_z, "class", "(b) Veri seti içi z-skor")]
     for ax, (Z, pca, by, title) in zip(axes, panels):
         scatter(ax, Z, ds, y, by)
         r = 100 * pca.explained_variance_ratio_
@@ -110,8 +111,8 @@ def plot_pca(Z_raw, Z_z, pca_raw, pca_z, ds, y):
     h += [Line2D([], [], ls="", marker=DS_MARKERS[d], mfc="white", mec="black", label=f"{d} hastası")
           for d in ("Golub", "MILE")]
     fig.tight_layout()
-    fig.subplots_adjust(bottom=0.27)
-    fig.legend(handles=h, loc="lower center", ncol=len(h), frameon=False, fontsize=6)
+    fig.subplots_adjust(bottom=0.36)  # Lejant iki satır olacağı için altta biraz daha yer açıyoruz
+    fig.legend(handles=h, loc="lower center", ncol=3, frameon=False, fontsize=6, columnspacing=0.8)
     return save_fig(fig, "fig08b_birlesik_pca")
 
 
