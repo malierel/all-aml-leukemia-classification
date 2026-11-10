@@ -97,7 +97,7 @@ def plot_heatmap(L, y, res, names):
     Z.index = [f"{str(names[g])[:22]}" for g in genes]
 
     g = sns.clustermap(Z, method="average", metric="correlation", cmap="RdBu_r", center=0, vmin=-3, vmax=3,
-                       col_colors=y.map(CLASS_COLORS).rename("Sınıf"), figsize=(FIG_WIDTH, 5.2),
+                       col_colors=y.map(CLASS_COLORS).rename("Sınıf"), figsize=(FIG_WIDTH, 4.2),  # Rapor sütununda fazla yer kaplamasın diye kısa tutuyoruz
                        dendrogram_ratio=(0.12, 0.08), cbar_pos=(0.06, 0.9, 0.025, 0.07),
                        xticklabels=True, yticklabels=True)
     g.ax_heatmap.tick_params(axis="y", labelsize=3.5, length=0)
