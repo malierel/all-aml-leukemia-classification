@@ -255,8 +255,8 @@ Bütün analizler Python ile yapılmış ve tek komutla (\texttt{python scripts/
         f"{r7['subclass_counts'].loc[('AML', 'AML with normal karyotype + other abnormalities')]}'i tek bir alt sınıfa "
         f"(normal karyotip ve diğer anomaliler) aittir.\n")
     out.append(
-        f"Ham ifade değerleri aşırı sağa çarpıktır (çarpıklık {tr(r3['skew_raw'])}). Dudoit ve ark.~\\cite{{dudoit2002}} "
-        f"izlenerek değerler 20--16.000 aralığına kırpılmış ve log$_2$ dönüşümü uygulanmıştır; çarpıklık "
+        f"Ham ifade değerleri aşırı sağa çarpıktır (çarpıklık {tr(r3['skew_raw'])}). Dudoit ve ark.~\\cite{{dudoit2002}}'nın "
+        f"ön işlemesi uyarlanarak (alt sınır 100 yerine 20, log$_{{10}}$ yerine log$_2$) değerler 20--16.000 aralığına kırpılmış ve log$_2$ dönüşümü uygulanmıştır; çarpıklık "
         f"{tr(r3['skew_log'])}'e inmiştir (Şekil~\\ref{{fig:dagilim}}). Değerlerin {p(r3['clipped_low_pct'])}'i alt "
         f"sınıra kırpılmaktadır. Dönüşümden sonra da hastalar arasında ölçek farkı sürmektedir: hasta medyanları "
         f"{tr(r3['log_median_min'])}--{tr(r3['log_median_max'])} aralığında, en uç iki hastanın ortalamaları arasında "

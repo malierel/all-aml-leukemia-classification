@@ -7,7 +7,8 @@ bakmasına gerek yok.
 import numpy as np
 import pandas as pd
 
-# Dudoit ve ark. (2002) ile aynı sınırlar:
+# Dudoit ve ark. (2002) 100–16.000 aralığı ve log10 kullanıyor; biz yönergedeki örneğe uyup alt sınırı 20,
+# logaritmayı da log2 aldık (log2'de 1 birim fark = 2 kat fark, yorumlaması kolay):
 # 20'nin altındaki değerler (negatifler dahil) gürültü sayılıyor, hepsini 20'ye çekiyoruz.
 # 16.000'in üstünde cihaz doyuma ulaşıyor, yani daha büyük değerlere güvenemiyoruz.
 LOW, HIGH = 20, 16000

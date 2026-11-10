@@ -31,19 +31,19 @@ Kod: \url{https://github.com/malierel/all-aml-leukemia-classification}}}
 \maketitle
 
 \begin{abstract}
-Akut lenfoblastik lösemi (ALL) ve akut miyeloid lösemi (AML) farklı tedavi gerektiren iki lösemi alt tipidir. Bu ara raporda, gen ifadesi mikrodizi verisinden ALL/AML ayrımı yapacak bir çalışmanın literatürü, veri setleri ve keşifsel veri analizi (EDA) sunulmuştur. Golub ve ark. (1999) verisi ana veri seti, farklı nesil bir yongayla üretilmiş çok merkezli MILE verisi (GSE13159) dış doğrulama seti olarak seçilmiştir. EDA'da PCA iki sınıfı etiket kullanmadan ayırmış, eğitim setinde 602 gen FDR sonrası anlamlı bulunmuş ve bunların \%86'sı MILE'da da aynı yönde farklılaşmıştır. İki platform arasındaki ölçek farkı, her veri setinin kendi içinde normalize edilmesini gerektirmektedir.
+Akut lenfoblastik lösemi (ALL) ve akut miyeloid lösemi (AML) farklı tedavi gerektiren iki lösemi alt tipidir. Bu ara raporda, gen ifadesi mikrodizi verisinden ALL/AML ayrımı yapacak bir çalışmanın literatürü, veri setleri ve keşifsel veri analizi (EDA) sunulmuştur. Golub ve ark. (1999) verisi ana veri seti, farklı nesil bir yongayla üretilmiş çok merkezli MILE verisi (GSE13159) dış doğrulama seti olarak seçilmiştir. EDA'da PCA iki sınıfı etiket kullanmadan ayırmış, eğitim setinde 602 gen FDR sonrası anlamlı bulunmuş, iki veri setinin ortak genleri arasında anlamlı olanların \%86'sında AML--ALL farkının yönü MILE'da da aynı çıkmıştır. İki platform arasındaki ölçek farkı, her veri setinin kendi içinde normalize edilmesini gerektirmektedir.
 \end{abstract}
 
 
 % =====================================================================
 \section{Giriş}
-Akut lösemiler, kökenlerine göre lenfoid öncül hücrelerden gelişen ALL ve miyeloid öncül hücrelerden gelişen AML olarak iki gruba ayrılır. İki alt tip farklı kemoterapi rejimleriyle tedavi edildiği için yanlış sınıflandırma hem tedavi başarısını düşürür hem de gereksiz toksisiteye yol açar~\cite{golub1999}. Rutin tanıda morfoloji, immünofenotipleme ve sitogenetik birlikte yorumlanır; gen ifadesi profillemesi ise bu ayrımı tek bir moleküler testle yapma imkânı sunar~\cite{golub1999,haferlach2010}. Problem burada \textbf{ALL ve AML alt tip sınıflandırması} olarak ele alınmıştır. Ders modülündeki ``cancer / non-cancer'' adlandırması biyolojik olarak yanlıştır, çünkü iki sınıf da lösemi alt tipidir.
+Akut lösemiler, kökenlerine göre lenfoid öncül hücrelerden gelişen ALL ve miyeloid öncül hücrelerden gelişen AML olarak iki gruba ayrılır. İki alt tip farklı kemoterapi rejimleriyle tedavi edildiği için yanlış sınıflandırma hem tedavi başarısını düşürür hem de gereksiz toksisiteye yol açar~\cite{golub1999}. Rutin tanıda morfoloji, immünofenotipleme ve sitogenetik birlikte yorumlanır; gen ifadesi profillemesi ise bu ayrımı tek bir moleküler testle yapma imkânı sunar~\cite{golub1999,haferlach2010}. Problem burada \textbf{ALL ve AML alt tip sınıflandırması} olarak ele alınmıştır. Ders modülündeki ``cancer / non-cancer'' adlandırması biyolojik açıdan uygun değildir, çünkü iki sınıf da lösemi alt tipidir.
 
 DNA mikrodizileri binlerce genin mRNA düzeyini tek deneyde ölçer: etiketlenen mRNA yongadaki bilinen dizilere sahip problarla hibridize edilir ve her probdaki sinyal ilgili genin ifadesini yansıtır. Golub verisinin ölçüldüğü Hu6800 yongasında 7.129 prob vardır~\cite{golub1999}. Öznitelik sayısının örnek sayısını çok aşması ($p \gg n$) aşırı öğrenme riskini artırır ve öznitelik seçimini zorunlu kılar~\cite{saeys2007}.
 
 \textbf{Araştırma soruları:}
 \begin{itemize}[leftmargin=*]
-  \item \textbf{AS1:} Öznitelik seçimi çapraz doğrulamanın içine alındığında (nested CV), Golub verisindeki performans literatürde sık bildirilen \%100 doğruluktan anlamlı ölçüde düşük müdür?
+  \item \textbf{AS1:} Öznitelik seçimi ve hiperparametre ayarı iç içe çapraz doğrulamaya (nested CV) alındığında, birden fazla yöntemde ve dengeli metriklerle ölçülen performans, literatürde sık bildirilen \%100 doğruluktan anlamlı ölçüde düşük müdür?
   \item \textbf{AS2:} Golub verisinde eğitilen modellerin performansı, farklı platformda (HG-U133 Plus 2.0) üretilmiş bağımsız MILE verisinde korunur mu?
   \item \textbf{AS3:} Sınıf dengesizliği (\%65 ALL / \%35 AML) altında doğruluk ile dengeli doğruluk ve ROC-AUC, yöntemleri farklı sıralayacak kadar ayrışır mı?
 \end{itemize}
@@ -79,7 +79,7 @@ Golub ve ark.~\cite{golub1999} sinyal-gürültü oranıyla seçtikleri 50 gen ve
 Ambroise ve McLachlan~\cite{ambroise2002}, genler tüm veride seçildikten sonra yapılan çapraz doğrulamanın hatayı düşük gösterdiğini (seçim yanlılığı) Golub verisinde göstermiş, düzeltilmiş dış 10-kat CV ile hatayı yaklaşık \%5 bulmuştur. Varma ve Simon~\cite{varma2006} hiperparametre seçimi CV içinde yapıldığında da yanlılığın sürdüğünü ve nested CV'nin gerçek hatayı neredeyse yansız tahmin ettiğini göstermiştir. Kapoor ve Narayanan~\cite{kapoor2023} sızıntının bugün de 17 bilim alanında yaygın olduğunu raporlamıştır.
 
 \subsection{Son Dönem Çalışmalar}
-Son beş yılda metasezgisel ve hibrit öznitelik seçimi yöntemleri öne çıkmıştır~\cite{almazrua2022,elemam2022,osama2023,yaqoob2024}. Ilyas ve ark.~\cite{ilyas2023} benzer bir yaklaşımı GSE9476 lösemi verisine uygulamış, 22.283 öznitelikten seçtikleri 25 genle doğrusal programlama tabanlı bir sınıflandırıcıyla \%98,44 doğruluk bildirmiştir. Derin öğrenme yaklaşımları da önerilmiştir~\cite{alharbi2023,mallick2023}, ancak tablo verisinde ağaç tabanlı modeller derin modelleri çoğu zaman geride bırakır~\cite{grinsztajn2022}. Transformer tabanlı TabPFN~\cite{hollmann2025} küçük örneklemde güçlüdür ama yaklaşık 500 öznitelik sınırı yüzünden önce öznitelik seçimi ister~\cite{zhou2025}; GenePT~\cite{chen2024} ise gen açıklamalarının LLM gömmelerine dayanan bir temsil önerir.
+Son beş yılda metasezgisel ve hibrit öznitelik seçimi yöntemleri öne çıkmıştır~\cite{almazrua2022,elemam2022,osama2023,yaqoob2024}. Ilyas ve ark.~\cite{ilyas2023} ise GSE9476 lösemi verisinde 22.283 öznitelikten seçtikleri 25 genle doğrusal programlama tabanlı bir sınıflandırıcıyla \%98,44 doğruluk bildirmiştir. Derin öğrenme yaklaşımları da önerilmiştir~\cite{alharbi2023,mallick2023}, ancak tablo verisinde ağaç tabanlı modeller derin modelleri çoğu zaman geride bırakır~\cite{grinsztajn2022}. Transformer tabanlı TabPFN~\cite{hollmann2025} küçük örneklemde güçlüdür ama yaklaşık 500 öznitelik sınırı yüzünden önce öznitelik seçimi ister~\cite{zhou2025}; GenePT~\cite{chen2024} ise gen açıklamalarının LLM gömmelerine dayanan bir temsil önerir.
 
 \begin{table*}[t]
 \caption{Golub verisini kullanan çalışmaların karşılaştırmalı özeti (veri seti: tüm çalışmalarda Golub, 72 örnek)}
@@ -103,13 +103,13 @@ Yaqoob 2024~\cite{yaqoob2024} & RDO, 4--14 gen & XGBoost & 3-kat CV, LOOCV & Dı
 \end{table*}
 
 \subsection{Literatürdeki Boşluk}
-Tablo~\ref{tab:lit}'deki çalışmaların çoğu Golub verisinde \%95--100 doğruluk bildirir. Hiçbiri nested CV kullanmamış, en az üçünde öznitelik seçimi kısmen ya da tamamen CV dışında yapılmıştır. Sınıflar dengesiz olduğu halde çoğu yalnızca doğruluk vermiştir. Sızıntıyı düzelten çalışmalarda~\cite{ambroise2002,diaz2006} hata \%5--7,5 düzeyine çıkar. Hiçbir çalışma bulgularını farklı platformda üretilmiş bağımsız bir veri setinde sınamamıştır; Golub'un test seti de aynı yongadan gelir. Bu çalışma sızıntısız nested CV, dengesizliğe duyarlı metrikler ve platformlar arası dış doğrulamayla bu boşluğu hedeflemektedir.
+Tablo~\ref{tab:lit}'deki çalışmaların çoğu Golub verisinde \%95--100 doğruluk bildirir. Öznitelik seçimini ve hiperparametre ayarını birlikte iç içe CV ile yapan bir çalışma yoktur; en az üçünde öznitelik seçimi kısmen ya da tamamen CV dışında yapılmıştır. Sınıflar dengesiz olduğu halde çoğu yalnızca doğruluk vermiştir. Sızıntıyı düzelten çalışmalarda~\cite{ambroise2002,diaz2006} hata \%5--7,5 düzeyine çıkar. Hiçbir çalışma bulgularını farklı platformda üretilmiş bağımsız bir veri setinde sınamamıştır; Golub'un test seti de aynı yongadan gelir. Bu çalışma sızıntısız nested CV, dengesizliğe duyarlı metrikler ve platformlar arası dış doğrulamayla bu boşluğu hedeflemektedir.
 
 % =====================================================================
 \section{Veri Setleri}
-\textbf{Golub verisi}~\cite{golub1999} Kaggle'da CC0 lisansıyla yayımlanan sürümden alınmıştır. Kemik iliği ve periferik kan örneklerinden oluşan 72 hastalık set Hu6800 yongasıyla (7.129 prob) ölçülmüştür. Referans bölünme 38 eğitim (27 ALL, 11 AML) ve 34 bağımsız test (20 ALL, 14 AML) örneğidir. Her hasta sütununun yanında P/A/M (Present/Absent/Marginal) tespit çağrısı bulunur ve hasta sütunları dosyada numara sırasında değildir.
+\textbf{Golub verisi}~\cite{golub1999} Kaggle'da CC0 lisansıyla yayımlanan sürümden alınmıştır. Kemik iliği ve periferik kan örneklerinden oluşan 72 hastalık set Hu6800 yongasıyla (7.129 prob) ölçülmüştür. Referans bölünme 38 eğitim (27 ALL, 11 AML) ve 34 bağımsız test (20 ALL, 14 AML) örneğidir. Her hasta sütununun yanında P/A/M (Present/Absent/Marginal) tespit etiketi (detection call) bulunur ve hasta sütunları dosyada numara sırasında değildir.
 
-\textbf{MILE verisi}~\cite{haferlach2010}, üç kıtada 11 merkezde yürütülen Microarray Innovations in LEukemia çalışmasının Aşama~I verisidir (GEO GSE13159; 2.096 hasta, 18 tanı sınıfı). Örnekler HG-U133 Plus 2.0 yongasıyla ölçülmüş, merkezler arası tekrarlanabilirliğin yüksek olduğu ön aşamada gösterilmiştir~\cite{kohlmann2008}. Yalnızca ALL (C1--C8, $n=750$) ve AML ($n=542$) alt sınıfları kullanılmıştır (Tablo~\ref{tab:veri}).
+\textbf{MILE verisi}~\cite{haferlach2010}, üç kıtada 11 merkezde yürütülen Microarray Innovations in LEukemia çalışmasının Aşama~I bölümünden alınmıştır (GEO GSE13159; 2.096 hasta, 18 tanı sınıfı). Örnekler HG-U133 Plus 2.0 yongasıyla ölçülmüş, merkezler arası tekrarlanabilirliğin yüksek olduğu ön aşamada gösterilmiştir~\cite{kohlmann2008}. Yalnızca ALL (C1--C8, $n=750$) ve AML ($n=542$) alt sınıfları kullanılmıştır (Tablo~\ref{tab:veri}).
 
 \begin{table}[htbp]
 \caption{Veri setlerinin karşılaştırması}
@@ -132,18 +132,18 @@ Sınıflar & ALL 47 / AML 25 & ALL 750 / AML 542 \\
 \end{tabularx}
 \end{table}
 
-MILE; aynı klinik problemi içerdiği ve ALL grubu B ile T soy örneklerini kapsadığı, aynı üreticinin farklı nesil yongasıyla platformlar arası genellemeyi sınamaya izin verdiği, çok merkezli tasarımıyla gerçekçi bir batch etkisi taşıdığı ve büyük örneklemiyle Golub'un $p \gg n$ rejiminin tersini sunduğu için seçilmiştir. Prob kimlikleri GPL80 ve GPL570 anotasyonlarıyla gen sembollerine eşlenmiş; sembolsüz ve birden fazla gene eşlenen problar atılmış, aynı gene düşen problardan ortalama ifadesi en yüksek olan seçilmiştir. Sonuçta iki platformda 4.975 ortak gen kalmıştır. Kırpma (20--16.000) ve log$_2$ yalnızca Golub'a uygulanacak, MILE zaten normalize olduğundan iki set ortak genlerde her biri kendi içinde ölçeklenerek karşılaştırılacaktır.
+MILE; aynı klinik problemi içerdiği ve ALL grubu B ile T soy örneklerini kapsadığı, aynı üreticinin farklı nesil yongasıyla platformlar arası genellemeyi sınamaya izin verdiği, çok merkezli tasarımıyla gerçekçi bir batch etkisi taşıdığı ve büyük örneklemiyle Golub'un $p \gg n$ rejiminin tersini sunduğu için seçilmiştir. Prob kimlikleri GPL80 ve GPL570 anotasyonlarıyla gen sembollerine eşlenmiş; sembolsüz ve birden fazla gene eşlenen problar atılmış, aynı gene düşen problardan ortalama ifadesi en yüksek olan seçilmiştir. Bu seçim etiket kullanmaz ve Golub'da ortalama yalnızca eğitim setinden hesaplanmıştır. Sonuçta iki platformda 4.975 ortak gen kalmıştır. Kırpma (20--16.000) ve log$_2$ yalnızca Golub'a uygulanacak, MILE zaten normalize olduğundan iki set ortak genlerde her biri kendi içinde ölçeklenerek karşılaştırılacaktır.
 
 % =====================================================================
 \section{Keşifsel Veri Analizi (EDA)}
-Analizler Python ile yapılmış ve tek komutla yeniden üretilebilir (\texttt{scripts/run\_eda.py}). Golub test seti yalnızca betimleme ve batch karşılaştırmasında kullanılmış, ayırt edici gen analizi yalnızca eğitim setinde yapılmıştır.
+Analizler Python ile yapılmış ve tek komutla yeniden üretilebilir (\texttt{scripts/run\_eda.py}). Golub test seti yalnızca betimleme ve parti (batch) etkisi karşılaştırmasında kullanılmış, ayırt edici gen analizi yalnızca eğitim setinde yapılmıştır.
 
 \subsection{Veri Kalitesi ve Betimsel İstatistikler}
 Golub etiketleri hasta numarasına göre eşlenmiş ve sınıf sayıları 27/11 (eğitim) ve 20/14 (test) olarak doğrulanmıştır; etiketler sütun sırasıyla verilseydi 34 test hastasının 14'ü yanlış etiketlenecekti. Veride eksik ya da sonsuz değer yoktur. Değerlerin \%28,67'si negatiftir (en küçük -28.400) ve bunların \%99,28'i ``Absent'' olarak işaretlenmiştir, yani arka plan çıkarımından gelen gürültüdür. ``Present'' oranı sınıf ve setler arasında \%25,6--\%29,7 aralığındadır; 1.971 prob ise hiçbir hastada ``Present'' değildir (58 AFFX kontrol probunun 34'ü dahil).
 
-MILE matrisindeki 54.675 probun 45'i (tamamı AFFX) bütün hastalarda boştur; bunlar çıkarılınca eksik değer kalmaz. Değerler 0--1 aralığındadır ve negatif değer yoktur. Her hastanın medyanı aynıdır (0,2496), yani veri quantile normalize edilmiştir. Çarpıklık (0,70) Golub'un log$_2$ sonrası değerine yakındır ve bir kez daha log alınınca -0,89'a döner; bu nedenle MILE'a kırpma ve log$_2$ uygulanmamıştır. Seçilen hastaların 1.211'i kemik iliği, 81'i periferik kan örneğidir.
+MILE matrisindeki 54.675 probun 45'i (tamamı AFFX) bütün hastalarda boştur; bunlar çıkarılınca eksik değer kalmaz. Değerler 0--1 aralığındadır ve negatif değer yoktur. Her hastanın medyanı aynıdır (0,2496), yani veri quantile normalize edilmiştir. Çarpıklık (0,70) Golub'un log$_2$ sonrası değerine yakındır ve bir kez daha log alındığında -0,89 olur; bu nedenle MILE'a kırpma ve log$_2$ uygulanmamıştır. Seçilen hastaların 1.211'i kemik iliği, 81'i periferik kan örneğidir.
 
-Sınıflar iki sette de dengesizdir: Golub'da 47 ALL ve 25 AML (\%65,3 ALL), MILE'da 750 ALL ve 542 AML (\%58,0 ALL). Golub test setinde AML oranı eğitimden yüksektir (\%28,9 ve \%41,2) ve MILE'daki AML'lerin 351'i tek bir alt sınıftan gelir. Golub'un ham değerleri aşırı sağa çarpıktır (7,08); Dudoit ve ark.~\cite{dudoit2002} izlenerek 20--16.000 kırpma ve log$_2$ uygulanınca çarpıklık 0,55'e iner (Şekil~\ref{fig:dagilim}), değerlerin \%32,72'si ise alt sınıra yığılır. Dönüşümden sonra da hasta medyanları 6,09--7,65 aralığındadır ve en uç iki hastanın ortalamaları yaklaşık 2,03 kat farklıdır. ALL ve AML ortalamaları neredeyse aynı olduğundan (6,965 ve 6,985) bu fark teknik kaynaklıdır.
+Sınıflar iki sette de dengesizdir: Golub'da 47 ALL ve 25 AML (\%65,3 ALL), MILE'da 750 ALL ve 542 AML (\%58,0 ALL). Golub test setinde AML oranı eğitimden yüksektir (\%28,9 ve \%41,2) ve MILE'daki AML'lerin 351'i tek bir alt sınıftan gelir. Golub'un ham değerleri aşırı sağa çarpıktır (7,08); Dudoit ve ark.~\cite{dudoit2002}'nın ön işlemesi uyarlanarak (alt sınır 100 yerine 20, log$_{10}$ yerine log$_2$) değerler 20--16.000 aralığına kırpılıp log$_2$ alınınca çarpıklık 0,55'e iner (Şekil~\ref{fig:dagilim}), değerlerin \%32,72'si ise alt sınıra yığılır. Dönüşümden sonra da hasta medyanları 6,09--7,65 aralığındadır ve en uç iki hastanın ortalamaları yaklaşık 2,03 kat farklıdır. ALL ve AML ortalamaları neredeyse aynı olduğundan (6,965 ve 6,985) bu fark teknik kaynaklıdır.
 
 \begin{figure}[t]
 \centering
@@ -180,9 +180,9 @@ Yalnızca eğitim setinde, iki sınıfta da sabit olan 476 gen çıkarıldıktan
 \end{figure}
 
 \subsection{Batch Analizi}
-Test setinde AML oranı yüksek olduğundan eğitim--test karşılaştırması yalnızca ALL hastalarında yapılmıştır. Test hastalarının genel ifade düzeyi biraz daha düşüktür ve PC2 setleri ayırır ($p = 4{,}3 \times 10^{-4}$). Gen bazında KS testinde 834 gen $p<0{,}05$ verir (şans eseri beklenen 245), FDR sonrasında ise yalnızca 22 gen anlamlı kalır; her hasta kendi medyanına göre ortalanınca bu sayı 2'ye düşer. Batch farkı zayıf ama yaygındır ve büyük ölçüde ölçek kaymasından kaynaklanır.
+Test setinde AML oranı yüksek olduğundan eğitim--test karşılaştırması yalnızca ALL hastalarında yapılmıştır. Test hastalarının genel ifade düzeyi biraz daha düşüktür ve PC2 setleri ayırır ($p = 4{,}3 \times 10^{-4}$). ALL hastalarının en az yarısında kırpma sınırının üstünde kalan 4.898 gene uygulanan KS testinde 834 gen $p<0{,}05$ verir (şans eseri beklenen $4.898 \times 0{,}05 \approx 245$), FDR sonrasında ise yalnızca 22 gen anlamlı kalır; her hasta kendi medyanına göre ortalanınca bu sayı 2'ye düşer. Batch farkı zayıf ama yaygındır ve büyük ölçüde ölçek kaymasından kaynaklanır.
 
-Golub ve MILE 4.975 ortak gende karşılaştırılmıştır. Ham değerler birleştirildiğinde PC1 varyansın \%97,2'sini açıklar ve yalnızca veri setini ayırır (veri seti siluet 0,99, sınıf siluet -0,00). Her gen kendi veri seti içinde z-skora çevrilince veri seti farkı kaybolur (veri seti siluet -0,18, sınıf siluet 0,35) ve ALL/AML ayrımı iki sette de aynı yönde ortaya çıkar (Şekil~\ref{fig:birlesik}). Golub eğitim setinde anlamlı bulunan genlerin \%86,0'ı MILE'da da aynı yönde farklıdır (tüm genlerde \%59,7) ve en anlamlı 50 genin 47'si tutarlıdır. Ters çıkan üç genden CDC25A (diğerleri DYNLL1 ve UBE2V2), Golub eğitim--test karşılaştırmasında da batch farkı gösteren tek ``en iyi 50'' genidir.
+Golub ve MILE 4.975 ortak gende karşılaştırılmıştır. Ham değerler birleştirildiğinde PC1 varyansın \%97,2'sini açıklar ve yalnızca veri setini ayırır (veri seti siluet 0,99, sınıf siluet -0,00). Her gen kendi veri seti içinde z-skora çevrilince veri seti farkı kaybolur (veri seti siluet -0,18, sınıf siluet 0,35) ve ALL/AML ayrımı iki sette de aynı yönde ortaya çıkar (Şekil~\ref{fig:birlesik}). Ortak genler arasında Golub eğitim setinde anlamlı olan 480 genin \%86,0'ında AML--ALL farkının işareti MILE'da da aynıdır (tüm genlerde bu oran \%59,7); bunların 388'i MILE'da da aynı yönde anlamlıdır. En anlamlı 50 genin 47'si tutarlıdır. Ters çıkan üç gen CDC25A, DYNLL1 ve UBE2V2'dir; bunlardan CDC25A, Golub eğitim--test karşılaştırmasında da batch farkı gösteren tek ``en iyi 50'' genidir.
 
 \begin{figure}[t]
 \centering
@@ -194,12 +194,12 @@ Golub ve MILE 4.975 ortak gende karşılaştırılmıştır. Ham değerler birle
 \subsection{Bulguların Özeti ve Modelleme İçin Çıkarımlar}
 \begin{enumerate}[leftmargin=*]
   \item Etiketler sütun sırasıyla verilseydi 14 test hastası yanlış etiketlenecekti. \textit{Çıkarım:} Eşleme her zaman hasta numarasıyla yapılmalı.
-  \item Golub'da eksik değer yoktur, değerlerin \%28,67'si negatiftir ve ham dağılım çok çarpıktır. \textit{Çıkarım:} INF doldurmaya gerek yoktur; 20--16.000 kırpma ve log$_2$ uygulanmalıdır.
+  \item Golub'da eksik değer yoktur, değerlerin \%28,67'si negatiftir ve ham dağılım çok çarpıktır. \textit{Çıkarım:} Modüldeki eksik değer doldurma (imputation) adımına gerek yoktur; 20--16.000 kırpma ve log$_2$ uygulanmalıdır.
   \item 1.971 prob hiçbir hastada ``Present'' değildir. \textit{Çıkarım:} AFFX probları atılmalı, ifade ve varyans filtresi yalnızca CV eğitim katlarında öğrenilmelidir.
-  \item Sınıf sinyali güçlüdür (602 anlamlı gen) ama tek yöne sığmaz (PC1+PC2 \%17,67). \textit{Çıkarım:} Öznitelik seçimi nested CV'nin her katında ayrı yapılmalıdır.
+  \item Sınıf sinyali güçlüdür (602 anlamlı gen) ama tek bir bileşenle açıklanamaz (PC1+PC2 \%17,67). \textit{Çıkarım:} Öznitelik seçimi nested CV'nin her katında ayrı yapılmalıdır.
   \item Sınıflar dengesizdir (\%65,3 ALL). \textit{Çıkarım:} Stratified bölme, class\_weight, dengeli doğruluk ve ROC-AUC kullanılmalıdır.
-  \item Hastalar arasında yaklaşık 2 kat ölçek farkı ve zayıf bir batch farkı vardır. \textit{Çıkarım:} Hasta bazında normalizasyon ablasyonla denenmelidir.
-  \item Ham birleştirmede veri seti farkı sınıf sinyalini bastırır, ama Golub'daki ayırt edici genlerin \%86,0'ı MILE'da da aynı yöndedir. \textit{Çıkarım:} Genler her veri setinde ayrı ölçeklenmelidir; Golub'da seçilen genlerin MILE'a aktarımı mümkün görünmektedir (AS2).
+  \item Hastalar arasında yaklaşık 2 kat ölçek farkı ve zayıf bir batch farkı vardır. \textit{Çıkarım:} Hasta bazında normalizasyon bir ablasyon çalışmasıyla sınanmalıdır.
+  \item Ham birleştirmede veri seti farkı sınıf sinyalini bastırır, ama Golub'da anlamlı olan ortak genlerin \%86,0'ında farkın yönü MILE'da da aynıdır. \textit{Çıkarım:} Genler her veri setinde ayrı ölçeklenmelidir; Golub'da seçilen genlerin MILE'a aktarımı mümkün görünmektedir (AS2).
 \end{enumerate}
 
 % =====================================================================
@@ -222,7 +222,7 @@ Rastgele Orman & Doğrusal olmayan, ölçeklemeye duyarsız; öznitelik önem sk
 \end{tabularx}
 \end{table}
 
-\textbf{Bonuslar:} B1 için dropout ve weight decay'li bir MLP; B2 için TabPFN v2~\cite{hollmann2025}, iç katlarda öznitelik seçimiyle~\cite{zhou2025}; süre kalırsa B4 için Armstrong ve ark.~\cite{armstrong2002} verisi.
+\textbf{Bonuslar (ders yönergesindeki kodlarla):} B1 (derin öğrenme) için seyreltme (dropout) ve ağırlık sönümü (weight decay) kullanan bir MLP; B2 (transformer tabanlı model) için TabPFN v2~\cite{hollmann2025}, iç katlarda öznitelik seçimiyle~\cite{zhou2025}; süre kalırsa B4 (üçüncü veri seti) için Armstrong ve ark.~\cite{armstrong2002} verisi.
 
 \textbf{Takvim:} 1. hafta pipeline, nested CV ve 38/34 bölme deneyleri; 2. hafta üç yöntemle ana deneyler ve istatistiksel test; 3. hafta MILE; 4. hafta bonus deneyleri; 5. hafta yorumlanabilirlik, ablasyon, rapor ve video.
 
